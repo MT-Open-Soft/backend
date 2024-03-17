@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const app = require('./app');
-require('dotenv').config();
 
-//process.loadEnvFile();
+
+process.loadEnvFile();
 const PORT = process.env.PORT || 8080;
 
 let server;
