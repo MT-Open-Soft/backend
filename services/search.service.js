@@ -75,6 +75,101 @@ const getSuggestions = async(query) => {
     return searchResults;
 }
 
+const getSearchResults = async(query) => {
+  const searchStage = {
+    index: "sample-mflix-search",
+    compound: {
+      should: [
+        {
+          autocomplete: {
+            query,
+            path: "title",
+            fuzzy : {
+              maxEdits : 2,
+              maxExpansions : 50
+            },
+            tokenOrder: "sequential", //any
+            score: {
+              boost: {
+                value: 7
+              }
+            }
+          }
+        },
+        {
+          autocomplete: {
+            query,
+            path: "plot",
+            fuzzy : {
+              maxEdits : 2,
+              maxExpansions : 50
+            },
+            tokenOrder: "sequential",
+            score: {
+              boost: {
+                value: 3
+              }
+            }
+          }
+        },
+        {
+          autocomplete:{
+            query,
+            path: "genres",
+            fuzzy : {
+              maxEdits : 2,
+              maxExpansions : 50
+            },
+            score: {
+              boost: {
+                value: 3
+              }
+            }
+          }
+        },
+        {
+          autocomplete:{
+            query,
+            path: "cast",
+            fuzzy : {
+              maxEdits : 2,
+              maxExpansions : 50
+            },
+            tokenOrder: "sequential",
+            score: {
+              boost: {
+                value: 3
+              }
+            }
+          }
+        },
+        {
+          autocomplete:{
+            query,
+            path: "directors",
+            fuzzy : {
+              maxEdits : 2,
+              maxExpansions : 50
+            },
+            tokenOrder: "sequential",
+            score: {
+              boost: {
+                value: 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+  const searchResults = await movieModel
+    .aggregate()
+    .search(searchStage)
+    .limit(20)
+    .project("title plot type poster runtime genres year imdb.rating -_id");
+  return searchResults;
+}
+
 module.exports = {
-    getSuggestions
+    getSuggestions, getSearchResults
 }
