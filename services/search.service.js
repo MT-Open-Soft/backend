@@ -1,6 +1,6 @@
 const {movieModel} = require("../models");
 
-const suggest = async(query) => {
+const getSuggestions = async(query) => {
     const searchStage = {
       index: "sample_mflix-movies-static",
       compound: {
@@ -76,5 +76,5 @@ const suggest = async(query) => {
 }
 
 module.exports = {
-    suggest
+    getSuggestions
 }

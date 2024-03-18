@@ -1,8 +1,7 @@
 const router = require("express").Router();
 
-const {suggestController, searchController} = require("../controllers");
+const {searchController} = require("../controllers");
 
-router.get("/", searchController);
-router.get("/suggestions", suggestController);
+router.get("/suggestions", searchController.suggest);
 
 module.exports = router;
