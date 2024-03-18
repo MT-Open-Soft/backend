@@ -18,18 +18,6 @@ const getSuggestions = async(query) => {
             }
           },
           {
-            autocomplete: {
-              query,
-              path: "plot",
-              tokenOrder: "sequential",
-              score: {
-                boost: {
-                  value: 3
-                }
-              }
-            }
-          },
-          {
             autocomplete:{
               query,
               path: "genres",
@@ -45,6 +33,9 @@ const getSuggestions = async(query) => {
               query,
               path: "cast",
               tokenOrder: "sequential",
+              fuzzy: {
+                maxEdits: 1
+              },
               score: {
                 boost: {
                   value: 3
