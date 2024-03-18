@@ -1,5 +1,6 @@
-const searchController = require("./search.controller");
+const {suggestController, searchController} = require("./search.controller");
 
 module.exports = {
+    suggestController,
     searchController
 }

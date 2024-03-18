@@ -1,5 +1,7 @@
 const searchRouter = require("./search.route");
 
-module.exports = {
-    searchRouter,
-}
+const router = require("express").Router();
+
+router.use("/search", searchRouter);
+
+module.exports = router;
