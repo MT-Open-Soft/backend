@@ -22,8 +22,13 @@ const movieSchema = mongoose.Schema({
   tomatoes: {
     viewer: { rating: Number, numReviews: Number },
     lastUpdated: Date
+  },
+  
+},
+  {
+  collection : 'movies'
   }
-});
+);
 
 const Movie = mongoose.model('Movie', movieSchema);
 
