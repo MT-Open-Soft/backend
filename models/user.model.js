@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     username : String,
     password: String,
-    subscriptionid: Number,
+    emailid: String,
+    subscriptionid: { type: Number, default: 0 },
+    
   }
 );
 

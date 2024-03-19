@@ -4,7 +4,8 @@ const signup=async(req,res)=>{
     try{
         console.log(req.body);
         const{username, password,subscriptionid}= req.body;
-        const userexists = await usermodel.findone({username:username});
+        const userexists = await usermodel.findOne({username:username});
+        console.log(userexists);
         if(userexists){
             return res.status(400).json({alert: "User already exists"});
 
@@ -28,7 +29,7 @@ const signup=async(req,res)=>{
     const signin =async(req,res)=>{
         const{username, password}= req.body;
         try{
-            const userexists = await usermodel.findone({username:username});
+            const userexists = await usermodel.findOne({username:username});
             if(!userexists){
                 return res.status(404).json({alert: "User not found"});
     
