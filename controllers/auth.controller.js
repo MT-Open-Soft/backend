@@ -1,7 +1,9 @@
 const usermodel = require("../models/user.model");
 const jwt= require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const sec_key ="xy123";
+process.loadEnvFile();
+const exp_time=process.env.JWT_EXPIRATION_TIME;
+const sec_key =process.env.JWT_SECRET_KEY;
 const signup=async(req,res)=>{
     try{
         console.log(req.body);
@@ -22,7 +24,7 @@ const signup=async(req,res)=>{
             subscriptionid: subscriptionid
         });
         
-        const token =jwt.sign({username: newuser.username}, sec_key);
+        const token =jwt.sign({username: newuser.username}, sec_key,{expiresIn: "exp_time"});
         res.status(201).json({user:newuser, token: token});
 
     } catch(error){
