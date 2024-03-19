@@ -1,9 +1,11 @@
 const usermodel = require("../models/user.model");
+const jwt= require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const sec_key ="xy123";
 const signup=async(req,res)=>{
     try{
         console.log(req.body);
-        const{username, password,subscriptionid}= req.body;
+        const{username, password,emailid,subscriptionid}= req.body;
         const userexists = await usermodel.findOne({username:username});
         console.log(userexists);
         if(userexists){
@@ -16,13 +18,15 @@ const signup=async(req,res)=>{
         const newuser = await usermodel.create({
             username: username,
             password: hpassword,
+            emailid:emailid,
+            subscriptionid: subscriptionid
         });
         
         const token =jwt.sign({username: newuser.username}, sec_key);
         res.status(201).json({user:newuser, token: token});
 
     } catch(error){
-        console.log(error);
+        console.log(error); 
         res.status(500).json({message:"Error detected"});
     }
 }
@@ -42,8 +46,8 @@ const signup=async(req,res)=>{
     
 
             
-            const token =jwt.sign({username: newuser.username}, sec_key);
-            res.status(201).json({user:newuser, token: token});
+            const token =jwt.sign({username: userexists.username}, sec_key);
+            res.status(201).json({user:userexists, token: token});
     
         } catch(error){
             console.log(error);
