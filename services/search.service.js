@@ -62,7 +62,7 @@ const getSuggestions = async(query) => {
       .aggregate()
       .search(searchStage)
       .limit(5)
-      .project("title type plot poster year imdb.rating cast -_id");
+      .project("title type plot poster year imdb.rating cast _id");
     return searchResults;
 }
 
@@ -136,7 +136,7 @@ const getSearchResults = async(query) => {
       ]
     }
   }
-  
+
   const searchResults = await movieModel
     .aggregate()
     .search(searchStage)
