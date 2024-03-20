@@ -24,7 +24,7 @@ const signup=async(req,res)=>{
             subscriptionid: subscriptionid
         });
         
-        const token =jwt.sign({username: newuser.username}, sec_key,{expiresIn: "exp_time"});
+        const token =jwt.sign({username: newuser.username}, sec_key,{expiresIn: exp_time});
         res.status(201).json({user:newuser, token: token});
 
     } catch(error){
