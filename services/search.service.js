@@ -134,9 +134,6 @@ const getSearchResults = async(query) => {
           }
         }
       ]
-    },
-    highlight: {
-      path: ["title", "cast", "genres", "directors"]
     }
   }
   const searchResults = await movieModel

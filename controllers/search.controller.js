@@ -3,18 +3,16 @@ const catchAsync = require("../utils/catchAsync");
 
 const suggest = catchAsync(async(req,res) => {
     const {query} = req.query;
-    
     const response = await searchService.getSuggestions(query);
     res.send(response);
 })
 
-const results = catchAsync(async(req,res) => {
+const search = catchAsync(async(req,res) => {
     const {query} = req.query;
-
     const response = await searchService.getSearchResults(query);
     res.send(response);
 })
 
 module.exports = {
-    suggest, results
+    suggest, search
 };
