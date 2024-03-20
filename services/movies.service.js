@@ -1,5 +1,5 @@
 // movies.service.js
-const Movie = require('../models/movie.model'); // Assuming you have a Movie model defined
+const Movie = require('../models/movie.model');
 
 const findMovies = async (genres, languages) => {
   const query = {};
@@ -69,9 +69,9 @@ const getMovieById = async (req, res) => {
       releaseYear: movie.year,
       directors: movie.directors,
     };
-    res.json(simplifiedMovie); // Assuming you want to send the entire movie document
+    res.json(simplifiedMovie);
   } catch (error) {
-    console.error(error); // It's a good practice to log the error for debugging.
+    console.error(error); 
     res.status(500).json({ message: 'Error fetching movie', error: error.message });
   }
 };
