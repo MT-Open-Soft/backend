@@ -11,10 +11,72 @@ const findMovies = async (genres, languages) => {
   if (languages) {
     query.languages = { $in: languages.split(',') };
   }
- console.log("Query:", query);
+  console.log("Query:", query);
+  
   return Movie.find(query);
 };
 
+const getMovies = async (req, res) => {
+  try {
+    console.log("Request URL:", req.url);
+    const { genres, languages } = req.query;
+    const movies = await findMovies(genres, languages);
+
+  const simplifiedMovies = movies.map(movie => ({
+  title: movie.title,
+  poster: movie.poster,
+  type: movie.type,
+  cast: movie.cast,
+  imdbRating: movie.imdb.rating,
+    plot: {
+      brief: movie.plot,
+      
+    full: movie.fullplot
+  },
+  languages: movie.languages,
+  runtimeInMinutes: movie.runtime,
+  releaseYear: movie.year,
+  directors: movie.directors,
+}));
+
+    res.status(200).json(simplifiedMovies);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching movies', error: error.message });
+  }
+};
+
+const getMovieById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const movie = await Movie.findById(id);
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+
+
+    const simplifiedMovie = {
+      title: movie.title,
+      poster: movie.poster,
+      type: movie.type,
+      cast: movie.cast,
+      imdbRating: movie.imdb.rating,
+      plot: {
+        brief: movie.plot,
+        full: movie.fullplot
+      },
+      languages: movie.languages,
+      runtimeInMinutes: movie.runtime,
+      releaseYear: movie.year,
+      directors: movie.directors,
+    };
+    res.json(simplifiedMovie); // Assuming you want to send the entire movie document
+  } catch (error) {
+    console.error(error); // It's a good practice to log the error for debugging.
+    res.status(500).json({ message: 'Error fetching movie', error: error.message });
+  }
+};
+
+
 module.exports = {
-  findMovies,
+  getMovies,getMovieById,
 };
