@@ -7,7 +7,7 @@ const sec_key =process.env.JWT_SECRET_KEY;
 const signup=async(req,res)=>{
     try{
         console.log(req.body);
-        const{username, password,emailid,subscriptionid}= req.body;
+        const{username, password,emailid,role,subscriptionid}= req.body;
         const userexists = await usermodel.findOne({username:username});
         console.log(userexists);
         if(userexists){
@@ -21,10 +21,11 @@ const signup=async(req,res)=>{
             username: username,
             password: hpassword,
             emailid:emailid,
+            role: role,
             subscriptionid: subscriptionid
         });
         
-        const token =jwt.sign({username: newuser.username}, sec_key,{expiresIn: exp_time});
+        const token =jwt.sign({user:newuser}, sec_key,{expiresIn: exp_time});
         res.status(201).json({user:newuser, token: token});
 
     } catch(error){
@@ -48,7 +49,7 @@ const signup=async(req,res)=>{
     
 
             
-            const token =jwt.sign({username: userexists.username}, sec_key);
+            const token =jwt.sign({user: userexists}, sec_key);
             res.status(201).json({user:userexists, token: token});
     
         } catch(error){

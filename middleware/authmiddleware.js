@@ -4,7 +4,7 @@ const JWT_SECRET =process.env.JWT_SECRET_KEY;
 
 const authenticate = (req, res, next) => {
   const token = req.header('Authorization');
-  const username=req.body.username;
+  
   if (!token) {
     return res.status(401).json({ message: 'Authorization token is required.' });
   }
