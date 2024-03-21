@@ -16,6 +16,7 @@ const findMovies = async (genres, languages) => {
   const movies = await Movie.find(query);
 
   const simplifiedMovies = movies.map(movie => ({
+    id : movie._id,
     title: movie.title,
     poster: movie.poster,
     type: movie.type,
