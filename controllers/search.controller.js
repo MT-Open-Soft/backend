@@ -1,11 +1,18 @@
-const Movie = require("../models/movie.model");
 const { searchService } = require("../services");
+const catchAsync = require("../utils/catchAsync");
 
-const searchController = async(req,res) => {
+const suggest = catchAsync(async(req,res) => {
     const {query} = req.query;
-
-    const response = await searchService.suggest(query);
+    const response = await searchService.getSuggestions(query);
     res.send(response);
-}
+})
 
-module.exports = searchController;
+const search = catchAsync(async(req,res) => {
+    const {query} = req.query;
+    const response = await searchService.getSearchResults(query);
+    res.send(response);
+})
+
+module.exports = {
+    suggest, search
+};

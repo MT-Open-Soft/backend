@@ -3,7 +3,7 @@ const Movie = require('../models/movie.model');
 
 const findMovies = async (genres, languages) => {
   const query = {};
-  console.log("Movie count:", await Movie.countDocuments()); 
+  
   if (genres) {
     query.genres = { $in: genres.split(',') };
   }
@@ -11,7 +11,6 @@ const findMovies = async (genres, languages) => {
   if (languages) {
     query.languages = { $in: languages.split(',') };
   }
-  console.log("Query:", query);
   
   const movies = await Movie.find(query);
 
