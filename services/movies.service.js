@@ -12,51 +12,85 @@ const findMovies = async (genres, languages) => {
     query.languages = { $in: languages.split(',') };
   }
   
-  const movies = await Movie.find(query);
+    for (const key of Object.keys(query)) {
+    query[key] = { $regex: new RegExp(query[key].$in.join('|'), 'i') };
+  }
+  
+  const movies = await Movie.find(query).select({
+    _id: 1,
+    title: 1,
+    poster: 1,
+    type: 1,
+    cast: 1,
+    'imdb.rating': 1,
+    plot: 1,
+    fullplot: 1,
+    languages: 1,
+    runtime: 1,
+    year: 1,
+    directors: 1,
+  });
 
-  const simplifiedMovies = movies.map(movie => ({
-    id : movie._id,
+
+  const renamedMovies = movies.map(movie => ({
+    _id: movie._id,
     title: movie.title,
     poster: movie.poster,
     type: movie.type,
     cast: movie.cast,
-    imdbRating: movie.imdb.rating, 
-    plot: {
-      brief: movie.plot,
-      full: movie.fullplot
-    },
+    // plot: {
+    //   brief: movie.plot,
+    //   full: movie.fullplot
+    // },
     languages: movie.languages,
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
     directors: movie.directors,
+    imdbRating: movie.imdb.rating
   }));
 
-  return simplifiedMovies;
+
+
+  return renamedMovies;
 };
 
 const getMovieById = async (id) => {
-  const movie = await Movie.findById(id);
-  if (!movie) {
+  const movie = await Movie.findById(id).select({
+    _id: 1,
+    title: 1,
+    poster: 1,
+    type: 1,
+    cast: 1,
+    'imdb.rating': 1,
+    plot: 1,
+    fullplot: 1,
+    languages: 1,
+    runtime: 1,
+    year: 1,
+    directors: 1,
+  });
+  
+  if (movie === null) {
     throw new Error('Movie not found');
   }
 
-  const simplifiedMovie = {
+  
+  return {
+    _id: movie._id,
     title: movie.title,
     poster: movie.poster,
     type: movie.type,
     cast: movie.cast,
-    imdbRating: movie.imdb.rating,
-    plot: {
-      brief: movie.plot,
-      full: movie.fullplot
-    },
+    // plot: {
+    //   brief: movie.plot,
+    //   full: movie.fullplot
+    // },
     languages: movie.languages,
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
     directors: movie.directors,
+    imdbRating: movie.imdb.rating
   };
-
-  return simplifiedMovie;
 };
 
 module.exports = {
