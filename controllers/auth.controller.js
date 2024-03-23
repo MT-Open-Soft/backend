@@ -1,65 +1,20 @@
-const usermodel = require("../models/user.model");
-const jwt= require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-process.loadEnvFile();
-const exp_time=process.env.JWT_EXPIRATION_TIME;
-const sec_key =process.env.JWT_SECRET_KEY;
-const signup=async(req,res)=>{
-    try{
-        console.log(req.body);
-        const{username, password,emailid,role,subscriptionid}= req.body;
-        const userexists = await usermodel.findOne({username:username});
-        console.log(userexists);
-        if(userexists){
-            return res.status(400).json({alert: "User already exists"});
+const httpStatus = require("http-status");
+const signupservice=require("../services/signup.service");
+const signinservice=require("../services/signin.service");
+const catchAsync = require("../utils/catchAsync");
 
-        }
-
-        const hpassword = await bcrypt.hash(password,8);
-
-        const newuser = await usermodel.create({
-            username: username,
-            password: hpassword,
-            emailid:emailid,
-            role: role,
-            subscriptionid: subscriptionid
-        });
-        
-        const token =jwt.sign({user:newuser}, sec_key,{expiresIn: exp_time});
-        res.status(201).json({user:newuser, token: token});
-
-    } catch(error){
-        console.log(error); 
-        res.status(500).json({message:"Error detected"});
-    }
-}
-    const signin =async(req,res)=>{
-        const{username, password}= req.body;
-        try{
-            const userexists = await usermodel.findOne({username:username});
-            if(!userexists){
-                return res.status(404).json({alert: "User not found"});
+const signup = catchAsync(async(req,res) => {
+   
     
-            }
-            const chkpassword = await bcrypt.compare(password, userexists.password);
-            if(!chkpassword){
-                return res.status(400).json({message: "Wrong credentials"});
-            }
+    const response = await signupservice(req,res);
+    res.send(response);
+});
 
+const signin = catchAsync(async(req,res) => {
     
-
-            
-            const token =jwt.sign({user: userexists}, sec_key);
-            res.status(201).json({user:userexists, token: token});
     
-        } catch(error){
-            console.log(error);
-            res.status(500).json({message:"Error detected"});
-        }
+    const response = await signinservice(req,res);
+    res.send(response);
+});
     
-
-
-    
-}
-
 module.exports={signup,signin};

@@ -1,28 +1,34 @@
-const express= require("express");
-const adminRouter= express.Router();
-const moviemodel=require("../models/movie.model");
+const express = require("express");
+const httpstatus = require("http-status");
+const adminRouter = express.Router();
+const moviemodel = require("../models/movie.model");
+const { userhome } = require("../controllers/user.controller");
 
-
+adminRouter.post("/users", userhome);
 adminRouter.post("/", async (req, res) => {
     try {
-       
-        const { title, genres, year } = req.body;
 
-        
+        const { title, genres, year } = req.body;
         const newMovie = new moviemodel({
             title,
+            type,
+            imdb,
             genres,
+            runtime,
+            cast,
+            directors,
+            plot,
+            fullplot,languages,
+            released,
             year
         });
-
-        
         const createdMovie = await newMovie.save();
 
-        
-        res.status(201).json({ data: createdMovie });
+
+        res.status(httpstatus.CREATED).json({ data: createdMovie });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
 });
 adminRouter.get("/:id", async (req, res) => {
@@ -30,11 +36,11 @@ adminRouter.get("/:id", async (req, res) => {
     try {
         const movie = await moviemodel.findById(id);
         if (!movie) {
-            return res.status(404).json({ message: "Movie not found" });
+            return res.status(httpstatus.NOT_FOUND).json({ message: "Movie not found" });
         }
-        res.status(200).json({ movie:movie });
+        res.status(httpstatus.OK).json({ movie: movie });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
 });
 adminRouter.delete("/:id", async (req, res) => {
@@ -42,31 +48,25 @@ adminRouter.delete("/:id", async (req, res) => {
     const movie = await moviemodel.findById(id);
     console.log(req.params)
     let data = await movie.deleteOne(req.params);
-    res.status(200).json({ data });
+    res.status(httpstatus.OK).json({ data });
 
-});  
+});
 adminRouter.put("/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const movie = await moviemodel.findById(id);
         if (!movie) {
-            return res.status(404).json({ message: 'Movie not found' });
+            return res.status(httpstatus.NOT_FOUND).json({ message: 'Movie not found' });
         }
-
-        
         const movieToUpdate = req.body;
-
-        
         const updatedmovie = await moviemodel.findByIdAndUpdate(id, movieToUpdate, { new: true });
 
-        res.status(200).json({ data: updatedmovie });
+        res.status(httpstatus.OK).json({ data: updatedmovie });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
 });
-
-
 
 
 module.exports = adminRouter;
