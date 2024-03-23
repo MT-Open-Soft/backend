@@ -1,5 +1,6 @@
 const {userModel}= require("../models");
 const Razorpay = require('razorpay'); 
+
 //const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
 const razorpayInstance = new Razorpay({
@@ -46,10 +47,51 @@ const create = async (query)=>{
     }
 }
 
+const subscription = (query)=> {    
+    const user = userModel.updateOne({emailid: query.payload.payment.entity.email},
+        {
+            $set: {
+                subscriptionid: (query.payload.payment.entity.amount)/(200*100)
+            },
+            $currentDate: { lastModified: true }
+
+
+        });
+        
+        
+        return("succesfully modified");
+           
+
+        }
+
+
+ 
+const verifyorder = async (req) => {
+    const secret= '12345678'
+    const crypto = require('crypto')
+    const shasum = crypto.createHmac('sha256', secret)
+    shasum.update(JSON.stringify(req.body))
+    const digest = shasum.digest('hex')
+    console.log(digest, req.headers['x-razorpay-signature'])
+    if(digest === req.headers['x-razorpay-signature']){
+        console.log('request is legit')
+        const response = subscription(req.body)
+        return (response)
+
+    }
+    else{
+        console.log('request is not legit')
+    }
+}
+
+
+
+
 
 
 
 module.exports = {
     payment,
-    create
+    create,
+    verifyorder
 }
