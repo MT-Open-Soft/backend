@@ -6,12 +6,12 @@ const exp_time=process.env.JWT_EXPIRATION_TIME;
 const sec_key =process.env.JWT_SECRET_KEY;
 const httpStatus = require("http-status");
 
-const signupservice = async(req,res) => {
+const signupService = async(req,res) => {
    
     try{
         console.log(req.body);
-        const{username, password,emailid,role,subscriptionid}= req.body;
-        const userexists = await usermodel.findOne({username:username});
+        const{name, password,emailid,role,subscriptionid}= req.body;
+        const userexists = await usermodel.findOne({name:name});
         console.log(userexists);
         if(userexists){
             return res.status(httpStatus.BAD_REQUEST).json({alert: "User already exists"});
@@ -21,7 +21,7 @@ const signupservice = async(req,res) => {
         const hpassword = await bcrypt.hash(password,8);
 
         const newuser = await usermodel.create({
-            username: username,
+            name: name,
             password: hpassword,
             emailid:emailid,
             role: role,
@@ -37,4 +37,4 @@ const signupservice = async(req,res) => {
 
 }
 }
-module.exports=signupservice;
+module.exports=signupService;

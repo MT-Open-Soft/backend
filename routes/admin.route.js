@@ -2,9 +2,9 @@ const express = require("express");
 const httpstatus = require("http-status");
 const adminRouter = express.Router();
 const moviemodel = require("../models/movie.model");
-const { userhome } = require("../controllers/user.controller");
+const { userHome } = require("../controllers/user.controller");
 
-adminRouter.post("/users", userhome);
+adminRouter.post("/users", userHome);
 adminRouter.post("/", async (req, res) => {
     try {
 

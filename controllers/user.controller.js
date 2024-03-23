@@ -1,6 +1,6 @@
 const usermodel = require("../models/user.model");
 const httpStatus = require("http-status");
-const userhome = async (req, res) => {
+const userHome = async (req, res) => {
     try {
         const users = await usermodel.find();
         res.status(httpStatus.OK).json({ users: users });
@@ -10,4 +10,4 @@ const userhome = async (req, res) => {
 }
 
 
-module.exports={userhome};
+module.exports={userHome};

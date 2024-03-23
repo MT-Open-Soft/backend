@@ -12,7 +12,5 @@ app.get("/",(req,res)=>{
 app.use('/api/v1', routes);
 app.use(errorConverter);
 app.use(errorHandler);
-app.get('/check', authenticate, adminauthenticate,(req, res) => {
-  res.json({ message: 'Protected route accessed successfully.' });
-});
+
 module.exports = app;

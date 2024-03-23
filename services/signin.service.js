@@ -6,10 +6,10 @@ const exp_time=process.env.JWT_EXPIRATION_TIME;
 const sec_key =process.env.JWT_SECRET_KEY;
 const httpStatus = require("http-status");
 
-const signinservice =async(req,res)=>{
-    const{username, password}= req.body;
+const signinService =async(req,res)=>{
+    const{name, password}= req.body;
     try{
-        const userexists = await usermodel.findOne({username:username});
+        const userexists = await usermodel.findOne({name:name});
         if(!userexists){
             return res.status(httpStatus.NOT_FOUND).json({alert: "User not found"});
 
@@ -31,4 +31,4 @@ const signinservice =async(req,res)=>{
     }
    
 }
-module.exports=signinservice;
+module.exports=signinService;

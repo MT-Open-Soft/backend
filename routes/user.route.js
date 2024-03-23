@@ -1,11 +1,11 @@
 const express = require("express");
 const userRouter = express.Router();
 const usermodel = require("../models/user.model");
-const chkuser = require("../middleware/chkusermiddleware");
+const chkUser = require("../middleware/chkusermiddleware");
 const httpStatus = require("http-status");
 
 
-userRouter.get("/:id",chkuser, async (req, res) => {
+userRouter.get("/:id",chkUser, async (req, res) => {
    
     const { id } = req.params;
 
@@ -19,7 +19,7 @@ userRouter.get("/:id",chkuser, async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-userRouter.delete("/:id",chkuser, async (req, res) => {
+userRouter.delete("/:id",chkUser, async (req, res) => {
     const { id } = req.params;
     const user = await usermodel.findById(id);
     console.log(req.params)
@@ -27,7 +27,7 @@ userRouter.delete("/:id",chkuser, async (req, res) => {
     res.status(httpStatus.OK).json({ data });
 
 });
-userRouter.put("/:id",chkuser,async (req, res) => {
+userRouter.put("/:id",chkUser,async (req, res) => {
     try {
         const { id } = req.params;
         const user = await usermodel.findById(id);
@@ -47,7 +47,5 @@ userRouter.put("/:id",chkuser,async (req, res) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
 });
-
-module.exports = userRouter;
 
 module.exports = userRouter;

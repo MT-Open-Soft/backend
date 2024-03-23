@@ -4,7 +4,7 @@ process.loadEnvFile();
 const JWT_SECRET =process.env.JWT_SECRET_KEY;
 const httpStatus = require('http-status');
 
-const chkuser = (req, res, next) => {
+const chkUser = (req, res, next) => {
     const { id } = req.params;
     const token = req.header('Authorization');
 
@@ -26,4 +26,4 @@ const chkuser = (req, res, next) => {
     }
 };
 
-module.exports = chkuser;
+module.exports = chkUser;
