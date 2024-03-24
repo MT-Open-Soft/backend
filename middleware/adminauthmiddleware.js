@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const usermodel = require("../models/user.model");
 process.loadEnvFile();
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 const httpStatus = require("http-status");

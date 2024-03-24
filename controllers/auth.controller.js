@@ -1,19 +1,14 @@
-const httpStatus = require("http-status");
-const signupService=require("../services/signup.service");
-const signinService=require("../services/signin.service");
+const httpStatus = require('http-status');
 const catchAsync = require("../utils/catchAsync");
+const authService =require("../services/auth.service");
 
 const signup = catchAsync(async(req,res) => {
-   
-    
-    const response = await signupService(req,res);
+    const response = await authService.signup(req,res);
     res.send(response);
 });
 
 const signin = catchAsync(async(req,res) => {
-    
-    
-    const response = await signinService(req,res);
+    const response = await authService.signin(req,res);
     res.send(response);
 });
     
