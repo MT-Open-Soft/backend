@@ -11,7 +11,7 @@ const signupService = async (req, res) => {
     try {
         console.log(req.body);
         const { name, password, emailid, role, subscriptionid } = req.body;
-        const userexists = await usermodel.findOne({ name: name });
+        const userexists = await usermodel.findOne({ emailid:emailid });
         console.log(userexists);
         if (userexists) {
             return res.status(httpStatus.BAD_REQUEST).json({ alert: "User already exists" });

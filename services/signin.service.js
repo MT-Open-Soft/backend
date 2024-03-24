@@ -7,9 +7,9 @@ const sec_key = process.env.JWT_SECRET_KEY;
 const httpStatus = require("http-status");
 
 const signinService = async (req, res) => {
-    const { name, password } = req.body;
+    const { emailid, password } = req.body;
     try {
-        const userexists = await usermodel.findOne({ name: name });
+        const userexists = await usermodel.findOne({ emailid:emailid });
         if (!userexists) {
             return res.status(httpStatus.NOT_FOUND).json({ alert: "User not found" });
 
