@@ -1,13 +1,13 @@
 const express = require("express");
 const adminRouter = express.Router();
-const userController = require("../controllers/user.controller");
-const adminController=require("../controllers/admin.controller");
+const {adminController}=require("../controllers");
 
-adminRouter.get("/users", userController.userHome);
-adminRouter.post("/", adminController.createMovie);
-adminRouter.get("/:id",adminController.getMovie );
-adminRouter.delete("/:id",adminController.deleteMovie );
-adminRouter.put("/:id",adminController.updateMovie);
+adminRouter.get("/users", adminController.getUsers);
+
+adminRouter.post("/movies", adminController.createMovie);
+adminRouter.get("/movies/:id",adminController.getMovie );
+adminRouter.delete("/movies/:id",adminController.deleteMovie );
+adminRouter.put("/movies/:id",adminController.updateMovie);
 
 
 module.exports = adminRouter;

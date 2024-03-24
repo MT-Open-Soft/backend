@@ -18,7 +18,7 @@ const errorHandler = (err, req, res, next) => {
     statusCode = httpStatus.INTERNAL_SERVER_ERROR;
     message = httpStatus[httpStatus.INTERNAL_SERVER_ERROR];
   }
-  console.error(error);
+  console.error(err);
   res.locals.errorMessage = err.message;
 
   const response = {

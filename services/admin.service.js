@@ -1,70 +1,70 @@
 const moviemodel = require("../models/movie.model");
-const httpstatus = require("http-status");
+const usermodel = require("../models/user.model");
+const httpStatus = require("http-status");
+const ApiError = require("../utils/ApiError");
 
-const createMovie=async (req, res) => {
-    try {
+const userlist = async (req, res) => {
 
-        const { title, genres, year } = req.body;
-        const newMovie = new moviemodel({
-            title,
-            type,
-            imdb,
-            genres,
-            runtime,
-            cast,
-            directors,
-            plot,
-            fullplot,languages,
-            released,
-            year
-        });
-        const createdMovie = await newMovie.save();
+        const users = await usermodel.find();
+        const response = users.map(user => ({
+            name: user.name,
+            emailid: user.emailid,
+            role: user.role,
+            subscriptionid: user.subscriptionid
+        }));
+        return response;
 
+}
+const createMovie = async (data) => {
+    const { title, type,imdb,genres,runtime,cast,directors, plot,fullplot, languages,released,year } = data;
+    const newMovie = new moviemodel({
+        title,
+        type,
+        imdb,
+        genres,
+        runtime,
+        cast,
+        directors,
+        plot,
+        fullplot, languages,
+        released,
+        year
+    });
+    const createdMovie = await newMovie.save();
+    const response = { data: createdMovie };
+    return response;
 
-        res.status(httpstatus.CREATED).json({ data: createdMovie });
-    } catch (error) {
-        console.error(error);
-        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-    }
 }
 
-const getMovie=async (req, res) => {
-    const { id } = req.params; // Extracting the ID from the URL path parameters
-    try {
+const getMovie = async (id) => {
         const movie = await moviemodel.findById(id);
         if (!movie) {
-            return res.status(httpstatus.NOT_FOUND).json({ message: "Movie not found" });
+            throw new ApiError(httpStatus.NOT_FOUND,  "Movie not found" );
+            
         }
-        res.status(httpstatus.OK).json({ movie: movie });
-    } catch (error) {
-        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
-    }
-}
-
-const deleteMovie=async (req, res) => {
-    const { id } = req.params;
-    const movie = await moviemodel.findById(id);
-    console.log(req.params)
-    let data = await movie.deleteOne(req.params);
-    res.status(httpstatus.OK).json({ data });
+        const response={ movie: movie };
+        return response;
 
 }
 
-const updateMovie= async (req, res) => {
-    try {
-        const { id } = req.params;
+const deleteMovie = async (id) => {
+    console.log(id);
+    await moviemodel.deleteOne({id:id});
+    const response = { message: "Movie deleted successfully" };
+    return response;
+
+}
+
+const updateMovie = async (movieToUpdate,id) => {
+        
         const movie = await moviemodel.findById(id);
         if (!movie) {
-            return res.status(httpstatus.NOT_FOUND).json({ message: 'Movie not found' });
+            throw new ApiError(httpStatus.NOT_FOUND,  "Movie not found" );
         }
-        const movieToUpdate = req.body;
         const updatedmovie = await moviemodel.findByIdAndUpdate(id, movieToUpdate, { new: true });
+        const response={ data: updatedmovie };
+        return response;
 
-        res.status(httpstatus.OK).json({ data: updatedmovie });
-    } catch (error) {
-        console.error(error);
-        res.status(httpstatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-    }
 }
 
-module.exports={ createMovie,getMovie,deleteMovie,updateMovie }
+module.exports = { createMovie, getMovie, deleteMovie, updateMovie, userlist }

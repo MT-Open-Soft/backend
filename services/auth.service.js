@@ -5,21 +5,20 @@ process.loadEnvFile();
 const exp_time = process.env.JWT_EXPIRATION_TIME;
 const sec_key = process.env.JWT_SECRET_KEY;
 const httpStatus = require("http-status");
+const ApiError=require("../utils/ApiError");
 
-const signup = async (req, res) => {
 
-    try {
-        console.log(req.body);
-        const { name, password, emailid, role, subscriptionid } = req.body;
+const signup = async (data) => {
+
+        console.log(data);
+        const { name, password, emailid, role, subscriptionid } = data;
         const userexists = await usermodel.findOne({ emailid: emailid });
         console.log(userexists);
         if (userexists) {
-            return res.status(httpStatus.BAD_REQUEST).json({ alert: "User already exists" });
-
+            throw new ApiError(httpStatus.BAD_REQUEST,  "User already exists" );
+        
         }
-
         const hpassword = await bcrypt.hash(password, 8);
-
         const newuser = await usermodel.create({
             name: name,
             password: hpassword,
@@ -27,47 +26,40 @@ const signup = async (req, res) => {
             role: role,
             subscriptionid: subscriptionid
         });
-
         const token = jwt.sign({ user: newuser }, sec_key, { expiresIn: exp_time });
-        res.status(httpStatus.CREATED).json({
+        const response={
             name: newuser.name,
             emailid: newuser.emailid,
             role: newuser.role,
             subscriptionid: newuser.subscriptionid,
             token: token
-        });
+        };
+        return response;
 
-    } catch (error) {
-        console.log(error);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Error detected" });
-
-    }
+  
 }
 
 const signin = async (req, res) => {
     const { emailid, password } = req.body;
-    try {
+
         const userexists = await usermodel.findOne({ emailid: emailid });
         if (!userexists) {
-            return res.status(httpStatus.NOT_FOUND).json({ alert: "User not found" });
-
+            throw new ApiError(httpStatus.BAD_REQUEST,  "User not found" );
         }
         const chkpassword = await bcrypt.compare(password, userexists.password);
         if (!chkpassword) {
-            return res.status(httpStatus.BAD_REQUEST).json({ message: "Wrong credentials" });
+            throw new ApiError(httpStatus.BAD_REQUEST,  "Wrong credentials" );
         }
 
         const token = jwt.sign({ user: userexists }, sec_key);
-        res.status(httpStatus.OK).json({
+        const response={
             name: userexists.name,
             emailid: userexists.emailid,
             role: userexists.role,
             subscriptionid: userexists.subscriptionid, token: token
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Error detected" });
-    }
+        };
+        return response;
+
 
 }
 

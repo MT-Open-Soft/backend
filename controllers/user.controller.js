@@ -3,25 +3,26 @@ const httpStatus = require("http-status");
 const catchAsync = require("../utils/catchAsync");
 const userService=require("../services/user.service");
 
-const userHome = catchAsync(async(req,res) => {
-    const response = await userService.userlist(req,res);
-    res.send(response);
-});
+
 const getProfile = catchAsync(async(req,res) => {
-    const response = await userService.getAccount(req,res);
+    const { id } = req.params;
+    const response = await userService.getAccount(id);
     res.send(response);
 });
 
 const deleteProfile = catchAsync(async(req,res) => {
-    const response = await userService.deleteAccount(req,res);
+    const { id } = req.params;
+    const response = await userService.deleteAccount(id);
     res.send(response);
 });
 
 const updateProfile = catchAsync(async(req,res) => {
-    const response = await userService.updateAccount(req,res);
+    const {data}=req.body;
+    const {id} =req.params;
+    const response = await userService.updateAccount(data,id);
     res.send(response);
 });
 
 
 
-module.exports = { userHome, getProfile, deleteProfile, updateProfile };
+module.exports = {  getProfile, deleteProfile, updateProfile };
