@@ -1,7 +1,7 @@
 // movies.service.js
 const Movie = require('../models/movie.model');
 
-const findMovies = async (genres, languages) => {
+const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
   const query = {};
   
   if (genres) {
@@ -23,14 +23,15 @@ const findMovies = async (genres, languages) => {
     type: 1,
     cast: 1,
     'imdb.rating': 1,
-    plot: 1,
     fullplot: 1,
     languages: 1,
     runtime: 1,
     year: 1,
     directors: 1,
-  });
-
+  })
+    .skip((page - 1) * pageSize)
+    .limit(pageSize);
+   const total = await Movie.countDocuments(query);
 
   const renamedMovies = movies.map(movie => ({
     _id: movie._id,
@@ -38,10 +39,6 @@ const findMovies = async (genres, languages) => {
     poster: movie.poster,
     type: movie.type,
     cast: movie.cast,
-    // plot: {
-    //   brief: movie.plot,
-    //   full: movie.fullplot
-    // },
     languages: movie.languages,
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
@@ -51,7 +48,11 @@ const findMovies = async (genres, languages) => {
 
 
 
-  return renamedMovies;
+  return {
+    movies: renamedMovies,
+    TotalPages: Math.ceil(total / pageSize),
+    CurrentPage: Number(page)
+  };
 };
 
 const getMovieById = async (id) => {
@@ -81,10 +82,7 @@ const getMovieById = async (id) => {
     poster: movie.poster,
     type: movie.type,
     cast: movie.cast,
-    // plot: {
-    //   brief: movie.plot,
-    //   full: movie.fullplot
-    // },
+    Plot: movie.fullplot,
     languages: movie.languages,
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
