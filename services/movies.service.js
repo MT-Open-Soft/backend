@@ -1,5 +1,8 @@
 // movies.service.js
+const httpStatus = require('http-status');
 const Movie = require('../models/movie.model');
+const ApiError = require('../utils/ApiError');
+const {ObjectId} = require("mongoose").Types;
 
 const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
   const query = {};
@@ -56,6 +59,11 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
 };
 
 const getMovieById = async (id) => {
+
+  if(!ObjectId.isValid(id)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
+  }
+
   const movie = await Movie.findById(id).select({
     _id: 1,
     title: 1,
@@ -72,7 +80,7 @@ const getMovieById = async (id) => {
   });
   
   if (movie === null) {
-    throw new Error('Movie not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Movie not found');
   }
 
   

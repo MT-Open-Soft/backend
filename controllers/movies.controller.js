@@ -12,16 +12,11 @@ const getMovies = async (req, res) => {
     res.status(500).json({ message: 'Error fetching movies', error: error.message });
   }
 };
-const getMovieById = async (req, res) => {
-  try {
+const getMovieById = catchAsync(async (req, res) => {
     const { id } = req.params;
     const movie = await moviesService.getMovieById(id);
-    res.status(200).json(movie);
-  } catch (error) {
-    console.error("Error fetching movie by id:", error); 
-    res.status(500).json({ message: 'Error fetching movie by id', error: error.message });
-  }
-}
+    res.status(httpStatus.OK).json(movie);
+})
 
 module.exports = {
   getMovies,getMovieById,
