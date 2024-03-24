@@ -82,7 +82,7 @@ const getMovieById = async (id) => {
     poster: movie.poster,
     type: movie.type,
     cast: movie.cast,
-    Plot: movie.fullplot,
+    plot: movie.fullplot,
     languages: movie.languages,
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
