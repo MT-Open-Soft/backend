@@ -15,7 +15,7 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
     query.languages = { $in: languages.split(',') };
   }
   
-    for (const key of Object.keys(query)) {
+  for (const key of Object.keys(query)) {
     query[key] = { $regex: new RegExp(query[key].$in.join('|'), 'i') };
   }
   
@@ -33,8 +33,9 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
     directors: 1,
   })
     .skip((page - 1) * pageSize)
-    .limit(pageSize);
-   const total = await Movie.countDocuments(query);
+    .limit(pageSize).lean();
+
+  const total = await Movie.countDocuments(query);
 
   const renamedMovies = movies.map(movie => ({
     _id: movie._id,
@@ -49,12 +50,10 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
     imdbRating: movie.imdb.rating
   }));
 
-
-
   return {
     movies: renamedMovies,
-    TotalPages: Math.ceil(total / pageSize),
-    CurrentPage: Number(page)
+    totalPages: Math.ceil(total / pageSize),
+    currentPage: Number(page)
   };
 };
 
@@ -77,12 +76,11 @@ const getMovieById = async (id) => {
     runtime: 1,
     year: 1,
     directors: 1,
-  });
+  }).lean();
   
   if (movie === null) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Movie not found');
   }
-
   
   return {
     _id: movie._id,
