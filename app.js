@@ -1,4 +1,4 @@
-import express, { json } from 'express';
+import express from 'express';
 import cors from 'cors';
 import routes from './routes/index.js';
 import { errorHandler, errorConverter } from './middleware/error.js';
@@ -12,7 +12,7 @@ app.get("/",(req,res)=>{
   res.status(200).json({CTS: "Up and Running"});
 })
 
-app.use(json());
+app.use(express.json());
 app.use('/api/v1', routes);
 app.use(errorConverter);
 app.use(errorHandler);
