@@ -1,8 +1,12 @@
 const usermodel = require("../models/user.model");
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
+const {ObjectId} = require("mongoose").Types;
 
 const getAccount = async (id) => {
+    if(!ObjectId.isValid(id)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+      }
     const user = await usermodel.findById(id);
     if (!user) {
 
@@ -18,6 +22,9 @@ const getAccount = async (id) => {
 
 }
 const deleteAccount = async (id) => {
+    if(!ObjectId.isValid(id)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+      }    
     console.log(id)
     await usermodel.deleteOne({ id: id });
     const response = { message: "User deleted successfully" };
@@ -25,7 +32,9 @@ const deleteAccount = async (id) => {
 
 }
 const updateAccount = async (data, id) => {
-
+    if(!ObjectId.isValid(id)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+      }
     const userDataToUpdate = data;
     const updatedUser = await usermodel.findByIdAndUpdate(id, userDataToUpdate, { new: true });
     const response = {

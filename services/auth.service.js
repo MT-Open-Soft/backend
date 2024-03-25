@@ -29,6 +29,7 @@ const signup = async (data) => {
         const token = jwt.sign({ user: newuser }, sec_key, { expiresIn: exp_time });
         const response={
             name: newuser.name,
+            id: newuser.id,
             emailid: newuser.emailid,
             role: newuser.role,
             subscriptionid: newuser.subscriptionid,
@@ -54,6 +55,7 @@ const signin = async (req, res) => {
         const token = jwt.sign({ user: userexists }, sec_key);
         const response={
             name: userexists.name,
+            id:userexists.id,
             emailid: userexists.emailid,
             role: userexists.role,
             subscriptionid: userexists.subscriptionid, token: token
