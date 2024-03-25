@@ -1,6 +1,6 @@
-const httpStatus = require('http-status');
-const moviesService = require('../services/movies.service');
-const catchAsync = require('../utils/catchAsync');
+import httpStatus from 'http-status';
+import {moviesService} from '../services/index.js';
+import catchAsync from '../utils/catchAsync.js';
 
 const getMovies = catchAsync(async (req, res) => {
   const { genres, languages, page, pageSize } = req.query;
@@ -14,6 +14,7 @@ const getMovieById = catchAsync(async (req, res) => {
     res.status(httpStatus.OK).json(movie);
 });
 
-module.exports = {
-  getMovies,getMovieById,
+export default {
+  getMovies,
+  getMovieById,
 };
