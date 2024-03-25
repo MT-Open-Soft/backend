@@ -1,16 +1,14 @@
-import { connect } from 'mongoose';
-
-import app, { listen } from './app';
-
+import mongoose from 'mongoose';
+import app from './app.js';
 
 process.loadEnvFile();
 const PORT = process.env.PORT || 8080;
 
 let server;
-connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
         .then(()=>{
           console.log("Connected to MongoDB database")
-          server = listen(PORT, ()=>{
+          server = app.listen(PORT, ()=>{
             console.log(`Server listening on ${PORT}`)
           });
         })

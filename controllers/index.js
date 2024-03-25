@@ -1,5 +1,7 @@
-const searchController = require("./search.controller");
+import searchController from "./search.controller.js";
+import moviesController from "./movies.controller.js";
 
-module.exports = {
-    searchController
+export {
+    searchController,
+    moviesController
 }

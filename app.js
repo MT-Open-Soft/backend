@@ -1,7 +1,8 @@
 import express, { json } from 'express';
 import cors from 'cors';
-import routes from './routes';
-import { errorHandler, errorConverter } from './middleware/error';
+import routes from './routes/index.js';
+import { errorHandler, errorConverter } from './middleware/error.js';
+
 const app = express();
 let corsOptions = {
   origin: "http://localhost:3000"

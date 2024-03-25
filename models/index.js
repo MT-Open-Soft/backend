@@ -1,5 +1,5 @@
-const movieModel = require("./movie.model")
+import Movie from "./movie.model.js"
 
-module.exports = {
-    movieModel
+export {
+    Movie
 }

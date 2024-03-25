@@ -1,8 +1,7 @@
-// movies.service.js
-const httpStatus = require('http-status');
-const Movie = require('../models/movie.model');
-const ApiError = require('../utils/ApiError');
-const {ObjectId} = require("mongoose").Types;
+import httpStatus from 'http-status';
+import {Movie} from '../models/index.js';
+import ApiError from '../utils/ApiError.js';
+import { Types } from "mongoose";
 
 const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
   const query = {};
@@ -59,7 +58,7 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
 
 const getMovieById = async (id) => {
 
-  if(!ObjectId.isValid(id)) {
+  if(!Types.ObjectId.isValid(id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
   }
 
@@ -97,7 +96,7 @@ const getMovieById = async (id) => {
   };
 };
 
-module.exports = {
+export default {
   findMovies,
   getMovieById,
 };

@@ -1,4 +1,4 @@
-const {movieModel} = require("../models");
+import {Movie} from "../models/index.js";
 
 const getSuggestions = async(query) => {
     const searchStage = {
@@ -58,7 +58,7 @@ const getSuggestions = async(query) => {
         ]
       }
     }
-    const searchResults = await movieModel
+    const searchResults = await Movie
       .aggregate()
       .search(searchStage)
       .limit(5)
@@ -137,7 +137,7 @@ const getSearchResults = async(query) => {
     }
   }
 
-  const searchResults = await movieModel
+  const searchResults = await Movie
     .aggregate()
     .search(searchStage)
     .limit(50)
@@ -169,6 +169,7 @@ const getSearchResults = async(query) => {
   return response;
 }
 
-module.exports = {
-    getSuggestions, getSearchResults
-}
+export default { 
+  getSuggestions,
+  getSearchResults 
+};
