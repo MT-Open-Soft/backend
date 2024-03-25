@@ -1,5 +1,5 @@
-import searchRouter from "./search.route";
-import moviesRouter from "./movies.route";
+import searchRouter from "./search.route.js";
+import moviesRouter from "./movies.route.js";
 
 const router = require("express").Router();
 
