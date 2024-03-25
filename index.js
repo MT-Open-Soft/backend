@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
+import { connect } from 'mongoose';
 
-const app = require('./app');
+import app, { listen } from './app';
 
 
 process.loadEnvFile();
 const PORT = process.env.PORT || 8080;
 
 let server;
-mongoose.connect(process.env.MONGO_URI)
+connect(process.env.MONGO_URI)
         .then(()=>{
           console.log("Connected to MongoDB database")
-          server = app.listen(PORT, ()=>{
+          server = listen(PORT, ()=>{
             console.log(`Server listening on ${PORT}`)
           });
         })
@@ -41,4 +41,4 @@ process.on('SIGTERM', () => {
   }
 });
 
-module.exports = app;
+export default app;
