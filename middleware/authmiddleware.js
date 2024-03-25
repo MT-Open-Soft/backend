@@ -1,47 +1,40 @@
 const httpStatus = require('http-status');
 const jwt = require('jsonwebtoken');
-process.loadEnvFile();
-const JWT_SECRET =process.env.JWT_SECRET_KEY;
+const JWT_SECRET = process.env.JWT_SECRET_KEY;
+const ApiError = require("../utils/ApiError");
 
-const authenticate = (req, res, next) => {
+const authenticate = (req, next) => {
   const token = req.header('Authorization');
-  
+
   if (!token) {
-    return res.status(httpStatus.BAD_REQUEST).json({ message: 'Authorization token is required.' });
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Authorization token is required.');
   }
+  const tokenn = token.substring("Bearer ".length);
+  const decoded = jwt.verify(tokenn, JWT_SECRET);
+  req.user = decoded.user;
+  next();
 
-
-  try {
-    const tokenn = token.substring("Bearer ".length);
-    const decoded = jwt.verify(tokenn, JWT_SECRET);
-    req.user = decoded.user;
-    next();
-  } catch (err) {
-    return res.status(httpStatus.UNAUTHORIZED).json({ message: 'Invalid token.' });
-  }
 };
 
-const authorizedUser = (req, res, next) => {
+const authorizedUser = (req, next) => {
   const { id } = req.params;
   const token = req.header('Authorization');
 
   if (!token) {
-      return res.status(httpStatus.BAD_REQUEST).json({ message: 'Authorization token is required.' });
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Authorization token is required.');
   }
-
   try {
-      const tokenn = token.substring("Bearer ".length);
-      const decoded = jwt.verify(tokenn, JWT_SECRET);
-      const userId = decoded.user; 
-      if (userId._id !== id) {
-          return res.status(httpStatus.UNAUTHORIZED).json({ message: 'Unauthorized access.' });
-      }
-      req.user = decoded.user;
-      next();
+    const tokenn = token.substring("Bearer ".length);
+    const decoded = jwt.verify(tokenn, JWT_SECRET);
+    const userId = decoded.user;
+    if (userId._id !== id) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized access.');
+    }
+    req.user = decoded.user;
+    next();
   } catch (err) {
-      return res.status(httpStatus.BAD_REQUEST).json({ message: 'Invalid token.' });
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid token.');
   }
 };
 
-
-module.exports = {authenticate,authorizedUser};
+module.exports = { authenticate, authorizedUser };

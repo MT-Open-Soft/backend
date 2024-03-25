@@ -4,7 +4,7 @@ const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const { ObjectId } = require("mongoose").Types;
 
-const userlist = async (req, res) => {
+const userlist = async () => {
 
     const users = await usermodel.find();
     const response = users.map(user => ({
@@ -39,7 +39,7 @@ const createMovie = async (data) => {
 
 const getMovie = async (id) => {
     if (!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
     const movie = await moviemodel.findById(id);
     if (!movie) {
@@ -53,7 +53,7 @@ const getMovie = async (id) => {
 
 const deleteMovie = async (id) => {
     if (!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
     console.log(id);
     await moviemodel.deleteOne({ id: id });
@@ -64,7 +64,7 @@ const deleteMovie = async (id) => {
 
 const updateMovie = async (movieToUpdate, id) => {
     if (!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
     const movie = await moviemodel.findById(id);
     if (!movie) {

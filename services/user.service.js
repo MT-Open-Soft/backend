@@ -2,10 +2,11 @@ const usermodel = require("../models/user.model");
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const {ObjectId} = require("mongoose").Types;
+const bcrypt = require("bcrypt");
 
 const getAccount = async (id) => {
     if(!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
       }
     const user = await usermodel.findById(id);
     if (!user) {
@@ -23,7 +24,7 @@ const getAccount = async (id) => {
 }
 const deleteAccount = async (id) => {
     if(!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
       }    
     console.log(id)
     await usermodel.deleteOne({ id: id });
@@ -31,11 +32,25 @@ const deleteAccount = async (id) => {
     return response;
 
 }
-const updateAccount = async (data, id) => {
+const updateAccount = async (name,password,subscriptionid,role, id) => {
     if(!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid ID");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
       }
-    const userDataToUpdate = data;
+
+    const hpassword = await bcrypt.hash(password, 8);  
+    const userDataToUpdate = {
+        ...(name && {name}),
+        ...(role && {role}),
+        ...(subscriptionid && {subscriptionid}),
+        ...(password && {hpassword})
+
+    };
+    if(subscriptionid!=undefined && (subscriptionid!=0 || subscriptionid!=1 || subscriptionid!=2)){
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid subscriptionId");
+    }
+    if(role!=undefined && role!="admin" && role!="user"){
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid role");
+    }  
     const updatedUser = await usermodel.findByIdAndUpdate(id, userDataToUpdate, { new: true });
     const response = {
         name: updatedUser.name,
