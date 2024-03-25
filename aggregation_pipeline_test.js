@@ -31,4 +31,4 @@ const pipeline = [
   }
 ]
 
-module.exports = pipeline;
+export default pipeline;
