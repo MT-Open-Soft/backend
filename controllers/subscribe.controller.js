@@ -4,10 +4,10 @@ const catchAsync = require('../utils/catchAsync');
 
 
 const createorder = catchAsync(async (req, res) => {
-    const query = req.query;
+    const query = req.body;
     console.log(query);
     
-    const response = await paymentService.create(query);
+    const response = await paymentService.createorder(query);
     
     res.send(response);
     

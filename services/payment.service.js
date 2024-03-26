@@ -8,16 +8,17 @@ const razorpayInstance = new Razorpay({
     key_secret: 'GtBbIQ2TUUAiPVxDxvCa3EFy'
     
 });
+
 const payment = async (id) => {    
-    const users = await userModel.find({subscriptionid :id});
-    
-    return users;
-    
+    const users = await userModel.find({subscriptionid :id});    
+    return users; 
     
 }
-const create = async (query)=>{
+
+const createorder = async (query)=>{
     try {
         const amount = query.subscriptionid*200*100
+        console.log(amount);
         const options = {
             amount: amount,
             currency: 'INR',
@@ -39,8 +40,7 @@ const create = async (query)=>{
                 name: query.username,
                 email: query.emailid
             }
-        )
-           
+        )           
 
     } catch (error) {
         console.log(error.message);
@@ -48,19 +48,15 @@ const create = async (query)=>{
 }
 
 const subscription = (query)=> {    
-    const user = userModel.updateOne({emailid: query.payload.payment.entity.email},
+    const user = userModel.updateOne({emailid: query?.payload?.payment?.entity?.email},
         {
             $set: {
-                subscriptionid: (query.payload.payment.entity.amount)/(200*100)
+                subscriptionid: (query?.payload?.payment?.entity?.amount)/(200*100)
             },
             $currentDate: { lastModified: true }
-
-
-        });
+        });       
         
-        
-        return("succesfully modified");
-           
+        return("succesfully modified");          
 
         }
 
@@ -84,14 +80,8 @@ const verifyorder = async (req) => {
     }
 }
 
-
-
-
-
-
-
 module.exports = {
     payment,
-    create,
+    createorder,
     verifyorder
 }
