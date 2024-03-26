@@ -10,7 +10,6 @@ const getAccount = async (id) => {
       }
     const user = await usermodel.findById(id);
     if (!user) {
-
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
     const response = {
@@ -20,18 +19,20 @@ const getAccount = async (id) => {
         subscriptionid: user.subscriptionid
     };
     return response;
-
 }
+
 const deleteAccount = async (id) => {
     if(!ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
       }    
-    console.log(id)
-    await usermodel.deleteOne({ id: id });
-    const response = { message: "User deleted successfully" };
-    return response;
-
+    // console.log(id)
+    const user = await usermodel.findByIdAndDelete(id);
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    return { message: "User deleted successfully" };
 }
+
 const updateAccount = async (name,password,subscriptionid,role, id) => {
     if(!ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
