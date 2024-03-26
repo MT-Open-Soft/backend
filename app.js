@@ -1,7 +1,6 @@
 const express = require('express');
 const routes = require('./routes');
-const authenticate=require('./middleware/authmiddleware');
-const adminauthenticate = require("./middleware/adminauthmiddleware");
+
 const { errorHandler, errorConverter } = require('./middleware/error');
 const app = express();
 app.use(express.json());

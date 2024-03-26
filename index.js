@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
+process.loadEnvFile();
 
 const app = require('./app');
-
-
-process.loadEnvFile();
 const PORT = process.env.PORT || 8080;
 
 let server;
