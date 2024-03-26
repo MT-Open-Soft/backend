@@ -17,9 +17,9 @@ const deleteProfile = catchAsync(async(req,res) => {
 });
 
 const updateProfile = catchAsync(async(req,res) => {
-    const {name,password,subscriptionid,role}=req.body;
+    const {oldPassword,newPassword}=req.body;
     const {id} =req.params;
-    const response = await userService.updateAccount(name,password,subscriptionid,role,id);
+    const response = await userService.updatePassword(oldPassword,newPassword,id);
     res.send(response);
 });
 

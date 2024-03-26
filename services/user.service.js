@@ -1,13 +1,13 @@
 const usermodel = require("../models/user.model");
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
-const {ObjectId} = require("mongoose").Types;
+const { ObjectId } = require("mongoose").Types;
 const bcrypt = require("bcrypt");
 
 const getAccount = async (id) => {
-    if(!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
-      }
+    if (!ObjectId.isValid(id)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid User ID");
+    }
     const user = await usermodel.findById(id);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -22,10 +22,10 @@ const getAccount = async (id) => {
 }
 
 const deleteAccount = async (id) => {
-    if(!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
-      }    
-    // console.log(id)
+    if (!ObjectId.isValid(id)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid User ID");
+    }
+
     const user = await usermodel.findByIdAndDelete(id);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -33,25 +33,24 @@ const deleteAccount = async (id) => {
     return { message: "User deleted successfully" };
 }
 
-const updateAccount = async (name,password,subscriptionid,role, id) => {
-    if(!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid user ID");
-      }
+const updatePassword = async (oldPassword, newPassword, id) => {
+    if (!ObjectId.isValid(id)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid User ID");
+    }
+    const user = await usermodel.findById(id);
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    const chkpassword = await bcrypt.compare(oldPassword, user.password);
+    if (!chkpassword) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Old Password Incorrect");
+    }
 
-    const hpassword = await bcrypt.hash(password, 8);  
+    const hpassword = await bcrypt.hash(newPassword, 8);
     const userDataToUpdate = {
-        ...(name && {name}),
-        ...(role && {role}),
-        ...(subscriptionid && {subscriptionid}),
-        ...(password && {hpassword})
+        password: hpassword
 
     };
-    if(subscriptionid!=undefined && (subscriptionid!=0 || subscriptionid!=1 || subscriptionid!=2)){
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid subscriptionId");
-    }
-    if(role!=undefined && role!="admin" && role!="user"){
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid role");
-    }  
     const updatedUser = await usermodel.findByIdAndUpdate(id, userDataToUpdate, { new: true });
     const response = {
         name: updatedUser.name,
@@ -63,4 +62,5 @@ const updateAccount = async (name,password,subscriptionid,role, id) => {
 
 }
 
-module.exports = { getAccount, deleteAccount, updateAccount };
+
+module.exports = { getAccount, deleteAccount, updatePassword };
