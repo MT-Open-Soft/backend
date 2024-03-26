@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "@xenova/transformers": "^2.16.1",
     "express": "^4.18.3",
     "http-status": "^1.7.4",
     "mongoose": "^8.2.2"

@@ -1,8 +1,9 @@
 import {Movie} from "../models/index.js";
+import {pipeline} from "@xenova/transformers";
 
 const getSuggestions = async(query) => {
     const searchStage = {
-      index: "sample_mflix-movies-static",
+      index: "sample_mflix_search_index",
       compound: {
         should: [
           {
@@ -68,7 +69,7 @@ const getSuggestions = async(query) => {
 
 const getSearchResults = async(query) => {
   const searchStage = {
-    index: "sample_mflix-movies-static",
+    index: "sample_mflix_search_index",
     compound: {
       should: [
         {
@@ -137,11 +138,88 @@ const getSearchResults = async(query) => {
     }
   }
 
+  var vector_penalty = 1;
+  var full_text_penalty = 10;
+  const generateEmbeddings = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+  const output = await generateEmbeddings(query, { pooling: "mean", normalize: true });
+
   const searchResults = await Movie
-    .aggregate()
-    .search(searchStage)
+    .aggregate({
+      "$vectorSearch": {
+        "index": "vector_index",
+        "path": "plot_embeddings",
+        "queryVector": output.tolist()[0],
+        "numCandidates": 100,
+        "limit": 20
+      }
+    })
+    .group({"_id": null,"docs": {"$push": "$$ROOT"}})
+    .unwind({"path": "$docs", "includeArrayIndex": "rank"})
+    .addFields({
+      "vs_score": {
+        "$divide": [1.0, {"$add": ["$rank", vector_penalty, 1]}]
+      }
+    })
+    .project({"vs_score": 1, 
+    "_id": "$docs._id", 
+    "title": "$docs.title"})
+    .unionWith({
+      "coll": "new_embedded_movies",
+      "pipeline": [
+        {
+          "$search": searchStage
+        }, {
+          "$limit": 20
+        }, {
+          "$group": {
+            "_id": null,
+            "docs": {"$push": "$$ROOT"}
+          }
+        }, {
+          "$unwind": {
+            "path": "$docs", 
+            "includeArrayIndex": "rank"
+          }
+        }, {
+          "$addFields": {
+            "fts_score": {
+              "$divide": [
+                1.0,
+                {"$add": ["$rank", full_text_penalty, 1]}
+              ]
+            }
+          }
+        },
+        {
+          "$project": {
+            "fts_score": 1,
+            "_id": "$docs._id",
+            "title": "$docs.title",
+          }
+        }
+      ]
+    })
+    .group({
+      "_id": "$title",
+      "vs_score": {"$max": "$vs_score"},
+      "fts_score": {"$max": "$fts_score"}
+    })
+    .project({
+      "_id": 1,
+      "title": 1,
+      "vs_score": {"$ifNull": ["$vs_score", 0]},
+      "fts_score": {"$ifNull": ["$fts_score", 0]}
+    })
+    .project ({
+        "score": {"$add": ["$fts_score", "$vs_score"]},
+        "_id": 1,
+        "title": 1,
+        "vs_score": 1,
+        "fts_score": 1
+      })
+    .sort({"score": -1})
     .limit(50)
-    .project(
+      .project(
       {
         poster:1,
         title :1,
@@ -151,15 +229,15 @@ const getSearchResults = async(query) => {
         runtime:1,
         type:1, 
         genres:1,
-      });
-
+      }) ;
+ 
   const response = searchResults.map(result => {
     const {title, poster, _id, year, runtime: runtimeInMinutes, type, genres } = result;
     return {
       _id,
       title, 
       poster,
-      rating: result.imdb.rating,
+      //rating: result.imdb.rating,
       year, 
       runtimeInMinutes,
       type,
