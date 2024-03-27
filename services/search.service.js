@@ -63,7 +63,20 @@ const getSuggestions = async(query) => {
       .search(searchStage)
       .limit(5)
       .project("title type plot poster year imdb.rating cast _id");
-    return searchResults;
+
+    const response = searchResults.map(result => {
+    const { _id, title, poster, year, type, imdb: {rating} } = result;
+    return {
+      _id,
+      title,
+      poster,
+      rating,
+      year,
+      type,
+    }
+  })
+
+  return response;
 }
 
 const getSearchResults = async(query) => {
@@ -154,12 +167,12 @@ const getSearchResults = async(query) => {
       });
 
   const response = searchResults.map(result => {
-    const {title, poster, _id, year, runtime: runtimeInMinutes, type, genres } = result;
+    const { _id, title, poster,year, runtime: runtimeInMinutes, imdb: {rating}, type, genres } = result;
     return {
       _id,
-      title, 
+      title,
       poster,
-      rating: result.imdb.rating,
+      rating,
       year, 
       runtimeInMinutes,
       type,
