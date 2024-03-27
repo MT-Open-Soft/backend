@@ -7,12 +7,6 @@ const getUsers = catchAsync(async(req,res) => {
     res.status(httpStatus.OK).json(response);
 });
 
-const getMovie = catchAsync(async (req, res) => {
-    const {id}=req.params;
-    const response = await adminService.getMovie(id);
-    res.send(response);
-});
-
 const createMovie = catchAsync(async (req, res) => {
     const data=req.body;
     const response = await adminService.createMovie(data);
@@ -31,6 +25,4 @@ const updateMovie = catchAsync(async (req, res) => {
     res.send(response);
 });
 
-
-
-module.exports = { getMovie, createMovie, deleteMovie, updateMovie,getUsers };
+module.exports = { createMovie, deleteMovie, updateMovie, getUsers };

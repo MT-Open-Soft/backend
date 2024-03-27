@@ -5,7 +5,6 @@ const {adminController}=require("../controllers");
 adminRouter.get("/users", adminController.getUsers);
 
 adminRouter.post("/movies", adminController.createMovie);
-adminRouter.get("/movies/:id",adminController.getMovie );
 adminRouter.delete("/movies/:id",adminController.deleteMovie );
 adminRouter.put("/movies/:id",adminController.updateMovie);
 

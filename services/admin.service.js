@@ -38,20 +38,6 @@ const createMovie = async (data) => {
 
 }
 
-const getMovie = async (id) => {
-    if (!ObjectId.isValid(id)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
-    }
-    const movie = await moviemodel.findById(id);
-    if (!movie) {
-        throw new ApiError(httpStatus.NOT_FOUND, "Movie not found");
-
-    }
-    const response = { movie: movie };
-    return response;
-
-}
-
 const deleteMovie = async (id) => {
     if (!ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
@@ -77,4 +63,4 @@ const updateMovie = async (movieToUpdate, id) => {
 
 }
 
-module.exports = { createMovie, getMovie, deleteMovie, updateMovie, getUsers }
+module.exports = { createMovie, deleteMovie, updateMovie, getUsers }
