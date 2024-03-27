@@ -6,7 +6,7 @@ const { ObjectId } = require("mongoose").Types;
 
 const getUsers = async () => {
 
-    const users = await usermodel.find();
+    const users = await usermodel.find({role: "user"});
     const response = users.map(user => ({
         _id: user._id,
         name: user.name,
