@@ -51,12 +51,9 @@ const updatePassword = async (oldPassword, newPassword, id) => {
         password: hpassword
 
     };
-    const updatedUser = await usermodel.findByIdAndUpdate(id, userDataToUpdate, { new: true });
+    await usermodel.findByIdAndUpdate(id, userDataToUpdate, { new: true });
     const response = {
-        name: updatedUser.name,
-        emailid: updatedUser.emailid,
-        role: updatedUser.role,
-        subscriptionid: updatedUser.subscriptionid
+        message: "Password updated successfully",
     };
     return response;
 

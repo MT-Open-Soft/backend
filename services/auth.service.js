@@ -42,7 +42,7 @@ const signin = async (emailid, password) => {
     }
     const chkpassword = await bcrypt.compare(password, userexists.password);
     if (!chkpassword) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid Password");
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid Password");
     }
 
     const token = jwt.sign({ user: userexists }, sec_key);
