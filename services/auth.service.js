@@ -7,9 +7,9 @@ const ApiError = require("../utils/ApiError");
 const exp_time = process.env.JWT_EXPIRATION_TIME;
 const sec_key = process.env.JWT_SECRET_KEY;
 
-const signup = async (name, password, emailid) => {
+const signup = async (name, password, email) => {
 
-    const userexists = await usermodel.findOne({ emailid: emailid });
+    const userexists = await usermodel.findOne({ email: email });
     if (userexists) {
         throw new ApiError(httpStatus.BAD_REQUEST, "User already exists");
     }
@@ -18,9 +18,8 @@ const signup = async (name, password, emailid) => {
     const newuser = await usermodel.create({
         name,
         password: hpassword,
-        emailid,
-        role: "user",
-        subscriptionid: 0
+        email,
+        role: "user"
     });
 
     const token = jwt.sign({ user: newuser }, sec_key, { expiresIn: exp_time });
@@ -28,15 +27,15 @@ const signup = async (name, password, emailid) => {
         id: newuser.id,
         name: newuser.name,
         role: newuser.role,
-        subscriptionid: newuser.subscriptionid,
+        subscription: newuser.subscription,
         token: token
     };
     return response;
 }
 
-const signin = async (emailid, password) => {
+const signin = async (email, password) => {
 
-    const userexists = await usermodel.findOne({ emailid: emailid });
+    const userexists = await usermodel.findOne({ email: email });
     if (!userexists) {
         throw new ApiError(httpStatus.BAD_REQUEST, "User not Found");
     }
@@ -50,7 +49,7 @@ const signin = async (emailid, password) => {
         id: userexists.id,
         name: userexists.name,
         role: userexists.role,
-        subscriptionid: userexists.subscriptionid,
+        subscription: userexists.subscription,
         token: token
     };
     return response;

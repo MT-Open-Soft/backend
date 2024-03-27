@@ -4,20 +4,20 @@ const ApiError = require("../utils/ApiError");
 const httpStatus = require("http-status");
 
 const signup = catchAsync(async(req,res) => {
-    const {name, password, emailid} =req.body;
-    if(!name || !password || !emailid){
+    const {name, password, email} =req.body;
+    if(!name || !password || !email){
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing name, email or password");
     }
-    const response = await authService.signup(name, password, emailid);
+    const response = await authService.signup(name, password, email);
     res.status(httpStatus.CREATED).json(response);
 });
 
 const signin = catchAsync(async(req,res) => {
-    const { emailid, password } = req.body;
-    if(!emailid || !password){
+    const { email, password } = req.body;
+    if(!email || !password){
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing email or password");
     }
-    const response = await authService.signin( emailid, password);
+    const response = await authService.signin( email, password);
     res.status(httpStatus.OK).json(response);
 });
     

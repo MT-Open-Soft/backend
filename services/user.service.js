@@ -14,9 +14,9 @@ const getUser = async (id) => {
     }
     const response = {
         name: user.name,
-        emailid: user.emailid,
+        email: user.email,
         role: user.role,
-        subscriptionid: user.subscriptionid
+        subscription: user.subscription
     };
     return response;
 }

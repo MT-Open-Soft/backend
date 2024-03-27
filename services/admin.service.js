@@ -10,9 +10,9 @@ const getUsers = async () => {
     const response = users.map(user => ({
         _id: user._id,
         name: user.name,
-        emailid: user.emailid,
+        email: user.email,
         role: user.role,
-        subscriptionid: user.subscriptionid
+        subscription: user.subscription
     }));
     return response;
 
