@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-  username : String,
+  name : String,
   password: String,
-  emailid: String,
+  email: {type: String,unique: true},
   role: String,
-  subscriptionid: { type: Number, default: 0 },
+  subscription: { type: String, default: "Free" },
+  
   },
   {
     collection: 'newusers'

@@ -17,7 +17,7 @@ const payment = async (id) => {
 
 const createorder = async (query)=>{
     try {
-        const amount = query.subscriptionid*200*100
+        const amount = query.amount
         console.log(amount);
         const options = {
             amount: amount,
@@ -25,7 +25,7 @@ const createorder = async (query)=>{
             receipt: 'razorUser@gmail.com'
         }
 
-        const order= await razorpayInstance.orders.create(options) 
+        const order= await razorpayInstance.orders.create(options)
         console.log(order);
         return (
             {
@@ -47,14 +47,20 @@ const createorder = async (query)=>{
     }
 }
 
-const subscription = (query)=> {    
-    const user = userModel.updateOne({emailid: query?.payload?.payment?.entity?.email},
+const subscription = async(query)=> {  
+    console.log (query?.payload?.payment?.entity?.email)
+    const user1 =await userModel.findOne({email: query?.payload?.payment?.entity?.email}); 
+    console.log(user1); 
+    const user = await userModel.updateOne({email: query?.payload?.payment?.entity?.email},
         {
+            
             $set: {
-                subscriptionid: (query?.payload?.payment?.entity?.amount)/(200*100)
+                //subscrription name set based on amount
+                subscription: (query?.payload?.payment?.entity?.description)
             },
             $currentDate: { lastModified: true }
-        });       
+        });  
+            
         
         return("succesfully modified");          
 
@@ -71,6 +77,7 @@ const verifyorder = async (req) => {
     console.log(digest, req.headers['x-razorpay-signature'])
     if(digest === req.headers['x-razorpay-signature']){
         console.log('request is legit')
+        console.log (req.body.payload.payment.entity)
         const response = subscription(req.body)
         return (response)
 
