@@ -1,5 +1,5 @@
-const {paymentService} = require('../services');
-const catchAsync = require('../utils/catchAsync');
+import { paymentService } from '../services/index.js';
+import catchAsync from '../utils/catchAsync.js';
 
 
 
@@ -28,7 +28,7 @@ const verifyorder = catchAsync(async (req, res) => {
 );
 
 
-module.exports = {    
+export default {    
     createorder,
     verifyorder
 };

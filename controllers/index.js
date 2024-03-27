@@ -1,7 +1,9 @@
-const searchController = require("./search.controller");
-const subscribeController = require("./subscribe.controller");
+import searchController from "./search.controller.js";
+import moviesController from "./movies.controller.js";
+import subscribeController from "./subscribe.controller.js";
 
-module.exports = {
+export {
     searchController,
+    moviesController,
     subscribeController
 }

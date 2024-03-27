@@ -1,19 +1,12 @@
-const {userModel}= require("../models");
-const Razorpay = require('razorpay'); 
+import { User } from "../models/index.js";
+import Razorpay from 'razorpay'; 
 
-//const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
-
+process.loadEnvFile();
 const razorpayInstance = new Razorpay({
-    key_id: 'rzp_test_k6ufi601xH7LZQ',
-    key_secret: 'GtBbIQ2TUUAiPVxDxvCa3EFy'
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
     
 });
-
-const payment = async (id) => {    
-    const users = await userModel.find({subscriptionid :id});    
-    return users; 
-    
-}
 
 const createorder = async (query)=>{
     try {
@@ -33,7 +26,7 @@ const createorder = async (query)=>{
                 msg:'Order Created',
                 order_id:order.id,
                 amount:amount,
-                key_id: 'rzp_test_k6ufi601xH7LZQ',
+                key_id: process.env.RAZORPAY_KEY_ID,
                 product_name:query.item_name,
                 description:query.item_description,
                 contact:"contact",
@@ -48,10 +41,8 @@ const createorder = async (query)=>{
 }
 
 const subscription = async(query)=> {  
-    console.log (query?.payload?.payment?.entity?.email)
-    const user1 =await userModel.findOne({email: query?.payload?.payment?.entity?.email}); 
-    console.log(user1); 
-    const user = await userModel.updateOne({email: query?.payload?.payment?.entity?.email},
+ 
+    const user = await User.updateOne({email: query?.payload?.payment?.entity?.email},
         {
             
             $set: {
@@ -87,8 +78,7 @@ const verifyorder = async (req) => {
     }
 }
 
-module.exports = {
-    payment,
+export default {
     createorder,
     verifyorder
 }

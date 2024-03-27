@@ -1,15 +1,14 @@
-const router = require("express").Router();
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
+import { subscribeController } from "../controllers/index.js";
+import bodyParser from 'body-parser';
+const router = express.Router();
 
-const {subscribeController} = require("../controllers");
-const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(cors());
 
-
-
 router.post ("/createorder",subscribeController.createorder);
 router.post ("/verification",subscribeController.verifyorder);
 
-module.exports = router;
+export default router;

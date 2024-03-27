@@ -1,8 +1,9 @@
-const searchService = require("./search.service")
+import searchService from "./search.service.js"
+import moviesService from "./movies.service.js"
+import paymentService from "./payment.service.js"
 
-const paymentService = require("./payment.service")
-
-module.exports = {
-    searchService,    
+export {
+    searchService,
+    moviesService,    
     paymentService
 }

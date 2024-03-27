@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const routes = require('./routes');
-const { errorHandler, errorConverter } = require('./middleware/error');
+import express from 'express';
+import cors from 'cors';
+import routes from './routes/index.js';
+import { errorHandler, errorConverter } from './middleware/error.js';
+
 const app = express();
 let corsOptions = {
   origin: "http://localhost:3000"
@@ -16,4 +17,4 @@ app.use('/api/v1', routes);
 app.use(errorConverter);
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

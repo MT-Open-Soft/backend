@@ -1,8 +1,7 @@
-const httpStatus = require('http-status');
-const ApiError = require('../utils/ApiError');
-// const logger = require('../utils/winston');
+import httpStatus from 'http-status';
+import ApiError from '../utils/ApiError.js';
 
-const errorConverter = (err, req, res, next) => {
+export const errorConverter = (err, req, res, next) => {
   let error = err;
   if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode ? httpStatus.BAD_REQUEST : httpStatus.INTERNAL_SERVER_ERROR;
@@ -12,7 +11,7 @@ const errorConverter = (err, req, res, next) => {
   next(error);
 };
 
-const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, next) => {
   let {statusCode, message} = err;
   if (process.env.NODE_ENV === "production" && !err.isOperational) {
     statusCode = httpStatus.INTERNAL_SERVER_ERROR;
@@ -35,5 +34,3 @@ const errorHandler = (err, req, res, next) => {
 
   res.status(statusCode).send(response);
 };
-
-module.exports = {errorConverter, errorHandler};

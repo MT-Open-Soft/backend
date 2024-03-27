@@ -1,7 +1,5 @@
-const mongoose = require('mongoose');
-
-const app = require('./app');
-
+import mongoose from 'mongoose';
+import app from './app.js';
 
 process.loadEnvFile();
 const PORT = process.env.PORT || 8080;
@@ -41,4 +39,4 @@ process.on('SIGTERM', () => {
   }
 });
 
-module.exports = app;
+export default app;
