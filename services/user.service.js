@@ -4,7 +4,7 @@ const ApiError = require("../utils/ApiError");
 const { ObjectId } = require("mongoose").Types;
 const bcrypt = require("bcrypt");
 
-const getAccount = async (id) => {
+const getUser = async (id) => {
     if (!ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid User ID");
     }
@@ -60,4 +60,4 @@ const updatePassword = async (oldPassword, newPassword, id) => {
 }
 
 
-module.exports = { getAccount, deleteAccount, updatePassword };
+module.exports = { getUser, deleteAccount, updatePassword };

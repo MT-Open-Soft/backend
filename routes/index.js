@@ -8,7 +8,7 @@ const router = require("express").Router();
 
 router.use("/auth",authRouter);
 router.use("/search", searchRouter);
-router.use("/users", authenticate,userRouter);
+router.use("/user", authenticate,userRouter);
 router.use("/admin", authenticate,adminauthenticate,adminRouter);
 
 module.exports = router;
