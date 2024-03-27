@@ -1,10 +1,12 @@
 const catchAsync = require("../utils/catchAsync");
 const {adminService} = require("../services");
+const httpStatus = require("http-status");
 
 const getUsers = catchAsync(async(req,res) => {
     const response = await adminService.getUsers(req,res);
-    res.send(response);
+    res.status(httpStatus.OK).json(response);
 });
+
 const getMovie = catchAsync(async (req, res) => {
     const {id}=req.params;
     const response = await adminService.getMovie(id);
