@@ -4,10 +4,11 @@ const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const { ObjectId } = require("mongoose").Types;
 
-const userlist = async () => {
+const getUsers = async () => {
 
     const users = await usermodel.find();
     const response = users.map(user => ({
+        _id: user._id,
         name: user.name,
         emailid: user.emailid,
         role: user.role,
@@ -76,4 +77,4 @@ const updateMovie = async (movieToUpdate, id) => {
 
 }
 
-module.exports = { createMovie, getMovie, deleteMovie, updateMovie, userlist }
+module.exports = { createMovie, getMovie, deleteMovie, updateMovie, getUsers }

@@ -2,7 +2,7 @@ const catchAsync = require("../utils/catchAsync");
 const {adminService} = require("../services");
 
 const getUsers = catchAsync(async(req,res) => {
-    const response = await adminService.userlist(req,res);
+    const response = await adminService.getUsers(req,res);
     res.send(response);
 });
 const getMovie = catchAsync(async (req, res) => {
