@@ -137,9 +137,25 @@ const getSearchResults = async(query) => {
       ]
     }
   }
+  
+  let vector_penalty;
+  let full_text_penalty;
+  // Split the query text into words using whitespace as the delimiter
+  //const words = query.split(/\s+/);
+  const words = query.split(" ");
 
-  let vector_penalty = 5;
-  let full_text_penalty = 1;
+  // Count the number of words
+  const wordCount = words.length;
+  //Threshold value is 10
+  if(wordCount>=10) {
+    vector_penalty = 1  ;
+    full_text_penalty = 5;
+  }
+  else{
+    vector_penalty = 3;
+    full_text_penalty = 1;
+  }
+
   const generateEmbeddings = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
   const output = await generateEmbeddings(query, { pooling: "mean", normalize: true });
   const agg = [
@@ -174,6 +190,9 @@ const getSearchResults = async(query) => {
         "title": "$docs.title",
         "plot": "$docs.fullplot",
         "poster": "$docs.poster",
+        "year": "$docs.year",
+        "runtime": "$docs.runtime",
+        "type": "$docs.type", 
       }
     },
     {
@@ -211,6 +230,10 @@ const getSearchResults = async(query) => {
               "title": "$docs.title",
               "plot": "$docs.fullplot",
               "poster": "$docs.poster",
+              "year": "$docs.year",
+              "runtime": "$docs.runtime",
+              "type": "$docs.type"
+              //"vs_score": 0 
             }
           }
         ]
@@ -223,15 +246,21 @@ const getSearchResults = async(query) => {
         "fts_score": {"$max": "$fts_score"},
         "plot": {"$first": "$plot"},
         "title": {"$first": "$title"},
-        "poster": {"$first": "$poster"}
+        "poster": {"$first": "$poster"},
+        "year": {"$first": "$year"},
+        "runtime": {"$first": "$runtime"},
+        "type": {"$first": "$type"} 
       }
     },
     {
       "$project": {
         "_id": 1,
         "plot": 1,
-        title: 1,
-        poster: 1,
+        "title": 1,
+        "poster": 1,
+        "year": 1,
+        "runtime": 1,
+        "type": 1,
         "vs_score": {"$ifNull": ["$vs_score", 0]},
         "fts_score": {"$ifNull": ["$fts_score", 0]}
       }
@@ -241,10 +270,13 @@ const getSearchResults = async(query) => {
         "score": {"$add": ["$fts_score", "$vs_score"]},
         "_id": 1,
         "plot": 1,
-        title: 1,
-        poster: 1,
+        "title": 1,
+        "poster": 1,
+        "year": 1,
+        "runtime": 1,
         "vs_score": 1,
-        "fts_score": 1
+        "fts_score": 1,
+        "type": 1
       }
     },
     {"$sort": {"score": -1}},
@@ -256,6 +288,22 @@ const getSearchResults = async(query) => {
  
   const response = searchResults.map(result => {
     const {title, poster, _id, year, runtime: runtimeInMinutes, type, plot, vs_score, fts_score, score } = result;
+    // Creating an object
+    const data = {
+      title: title,
+      poster: poster,
+      _id: _id,
+      year: year,
+      runtimeInMinutes: runtimeInMinutes,
+      type: type,
+      plot: plot,
+      vs_score: vs_score,
+      fts_score: fts_score,
+      score: score
+    };
+    //Implementing pretty JSON string
+    let prettyJsonString = JSON.stringify(data, null, 2);
+    console.log(prettyJsonString);
     return {
       _id,
       title, 
@@ -263,9 +311,6 @@ const getSearchResults = async(query) => {
       //rating: result.imdb.rating,
       year, 
       plot,
-      vs_score,
-      fts_score,
-      score,
       runtimeInMinutes,
       type,
     }
