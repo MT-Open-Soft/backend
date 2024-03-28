@@ -1,11 +1,9 @@
 import mongoose from 'mongoose';
+import { MONGO_URI, PORT } from './utils/config.js';
 import app from './app.js';
 
-process.loadEnvFile();
-const PORT = process.env.PORT || 8080;
-
 let server;
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(MONGO_URI)
         .then(()=>{
           console.log("Connected to MongoDB database")
           server = app.listen(PORT, ()=>{

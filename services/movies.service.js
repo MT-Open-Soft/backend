@@ -75,6 +75,7 @@ const getMovieById = async (id) => {
     runtime: 1,
     year: 1,
     directors: 1,
+    genres: 1,
   }).lean();
   
   if (movie === null) {
@@ -92,7 +93,8 @@ const getMovieById = async (id) => {
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
     directors: movie.directors,
-    imdbRating: movie.imdb.rating
+    imdbRating: movie.imdb.rating,
+    genres: movie.genres
   };
 };
 
