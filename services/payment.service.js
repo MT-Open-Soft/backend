@@ -1,16 +1,19 @@
 import { User } from "../models/index.js";
 import Razorpay from 'razorpay'; 
+import ApiError from "../utils/ApiError.js";
+import httpStatus from "http-status";
+import { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } from "./config.js";
+
 
 process.loadEnvFile();
 const razorpayInstance = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
+    key_id: RAZORPAY_KEY_ID,
+    key_secret:RAZORPAY_KEY_SECRET
     
 });
 
-const createorder = async (query)=>{
+const createorder = async (amount,username,item_name,item_description,emailid)=>{
     try {
-        const amount = query.amount
         console.log(amount);
         const options = {
             amount: amount,
@@ -26,12 +29,12 @@ const createorder = async (query)=>{
                 msg:'Order Created',
                 order_id:order.id,
                 amount:amount,
-                key_id: process.env.RAZORPAY_KEY_ID,
-                product_name:query.item_name,
-                description:query.item_description,
+                key_id: RAZORPAY_KEY_ID,
+                product_name:item_name,
+                description:item_description,
                 contact:"contact",
-                name: query.username,
-                email: query.emailid
+                name: username,
+                email: emailid
             }
         )           
 
@@ -74,7 +77,7 @@ const verifyorder = async (req) => {
 
     }
     else{
-        console.log('request is not legit')
+        throw new ApiError(httpStatus.BAD_REQUEST, "Bad Request")
     }
 }
 
