@@ -138,110 +138,136 @@ const getSearchResults = async(query) => {
     }
   }
 
-  var vector_penalty = 1;
-  var full_text_penalty = 10;
+  let vector_penalty = 5;
+  let full_text_penalty = 1;
   const generateEmbeddings = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
   const output = await generateEmbeddings(query, { pooling: "mean", normalize: true });
-
-  const searchResults = await Movie
-    .aggregate({
+  const agg = [
+    {
       "$vectorSearch": {
         "index": "vector_index",
         "path": "plot_embeddings",
-        "queryVector": output.tolist()[0],
+        "queryVector": Array.from(output.data.values()),
         "numCandidates": 100,
         "limit": 20
       }
-    })
-    .group({"_id": null,"docs": {"$push": "$$ROOT"}})
-    .unwind({"path": "$docs", "includeArrayIndex": "rank"})
-    .addFields({
-      "vs_score": {
-        "$divide": [1.0, {"$add": ["$rank", vector_penalty, 1]}]
+    }, {
+      "$group": {
+        "_id": null,
+        "docs": {"$push": "$$ROOT"}
       }
-    })
-    .project({"vs_score": 1, 
-    "_id": "$docs._id", 
-    "title": "$docs.title"})
-    .unionWith({
-      "coll": "new_embedded_movies",
-      "pipeline": [
-        {
-          "$search": searchStage
-        }, {
-          "$limit": 20
-        }, {
-          "$group": {
-            "_id": null,
-            "docs": {"$push": "$$ROOT"}
-          }
-        }, {
-          "$unwind": {
-            "path": "$docs", 
-            "includeArrayIndex": "rank"
-          }
-        }, {
-          "$addFields": {
-            "fts_score": {
-              "$divide": [
-                1.0,
-                {"$add": ["$rank", full_text_penalty, 1]}
-              ]
+    }, {
+      "$unwind": {
+        "path": "$docs", 
+        "includeArrayIndex": "rank"
+      }
+    }, {
+      "$addFields": {
+        "vs_score": {
+          "$divide": [1.0, {"$add": ["$rank", vector_penalty, 1]}]
+        }
+      }
+    }, {
+      "$project": {
+        "vs_score": 1, 
+        "_id": "$docs._id", 
+        "title": "$docs.title",
+        "plot": "$docs.fullplot",
+        "poster": "$docs.poster",
+      }
+    },
+    {
+      "$unionWith": {
+        "coll": "new_embedded_movies",
+        "pipeline": [
+          {
+            "$search": searchStage
+          }, {
+            "$limit": 20
+          }, {
+            "$group": {
+              "_id": null,
+              "docs": {"$push": "$$ROOT"}
+            }
+          }, {
+            "$unwind": {
+              "path": "$docs", 
+              "includeArrayIndex": "rank"
+            }
+          }, {
+            "$addFields": {
+              "fts_score": {
+                "$divide": [
+                  1.0,
+                  {"$add": ["$rank", full_text_penalty, 1]}
+                ]
+              }
+            }
+          },
+          {
+            "$project": {
+              "fts_score": 1,
+              "_id": "$docs._id",
+              "title": "$docs.title",
+              "plot": "$docs.fullplot",
+              "poster": "$docs.poster",
             }
           }
-        },
-        {
-          "$project": {
-            "fts_score": 1,
-            "_id": "$docs._id",
-            "title": "$docs.title",
-          }
-        }
-      ]
-    })
-    .group({
-      "_id": "$title",
-      "vs_score": {"$max": "$vs_score"},
-      "fts_score": {"$max": "$fts_score"}
-    })
-    .project({
-      "_id": 1,
-      "title": 1,
-      "vs_score": {"$ifNull": ["$vs_score", 0]},
-      "fts_score": {"$ifNull": ["$fts_score", 0]}
-    })
-    .project ({
+        ]
+      }
+    },
+    {
+      "$group": {
+        "_id": "$_id",
+        "vs_score": {"$max": "$vs_score"},
+        "fts_score": {"$max": "$fts_score"},
+        "plot": {"$first": "$plot"},
+        "title": {"$first": "$title"},
+        "poster": {"$first": "$poster"}
+      }
+    },
+    {
+      "$project": {
+        "_id": 1,
+        "plot": 1,
+        title: 1,
+        poster: 1,
+        "vs_score": {"$ifNull": ["$vs_score", 0]},
+        "fts_score": {"$ifNull": ["$fts_score", 0]}
+      }
+    },
+    {
+      "$project": {
         "score": {"$add": ["$fts_score", "$vs_score"]},
         "_id": 1,
-        "title": 1,
+        "plot": 1,
+        title: 1,
+        poster: 1,
         "vs_score": 1,
         "fts_score": 1
-      })
-    .sort({"score": -1})
-    .limit(50)
-      .project(
-      {
-        poster:1,
-        title :1,
-        "imdb.rating" :1,
-        _id:1, 
-        year:1,
-        runtime:1,
-        type:1, 
-        genres:1,
-      }) ;
+      }
+    },
+    {"$sort": {"score": -1}},
+    {"$limit": 50}
+  ];
+  
+  const searchResults = await Movie
+    .aggregate(agg);
  
   const response = searchResults.map(result => {
-    const {title, poster, _id, year, runtime: runtimeInMinutes, type, genres } = result;
+    const {title, poster, _id, year, runtime: runtimeInMinutes, type, plot, vs_score, fts_score, score } = result;
     return {
       _id,
       title, 
       poster,
       //rating: result.imdb.rating,
       year, 
+      plot,
+      vs_score,
+      fts_score,
+      score,
       runtimeInMinutes,
       type,
-      genres
     }
   })
   return response;

@@ -25,6 +25,6 @@ const movieSchema = mongoose.Schema({
   },
 });
 
-const Movie = mongoose.model('Movie', movieSchema);
+const Movie = mongoose.model('New_embedded_movie', movieSchema);
 
 export default Movie;
