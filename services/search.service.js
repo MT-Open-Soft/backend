@@ -2,7 +2,7 @@ import {Movie} from "../models/index.js";
 
 const getSuggestions = async(query) => {
     const searchStage = {
-      index: "sample_mflix-movies-static",
+      index: "sample_mflix_search_index",
       compound: {
         should: [
           {
@@ -81,7 +81,7 @@ const getSuggestions = async(query) => {
 
 const getSearchResults = async(query) => {
   const searchStage = {
-    index: "sample_mflix-movies-static",
+    index: "sample_mflix_search_index",
     compound: {
       should: [
         {
