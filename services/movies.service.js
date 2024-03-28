@@ -30,6 +30,7 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
     runtime: 1,
     year: 1,
     directors: 1,
+    premium: 1
   })
     .skip((page - 1) * pageSize)
     .limit(pageSize).lean();
@@ -46,7 +47,8 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
     directors: movie.directors,
-    imdbRating: movie.imdb.rating
+    imdbRating: movie.imdb.rating,
+    premium: movie.premium
   }));
 
   return {
@@ -76,6 +78,7 @@ const getMovieById = async (id) => {
     year: 1,
     directors: 1,
     genres: 1,
+    premium: 1,
   }).lean();
   
   if (movie === null) {
@@ -100,14 +103,15 @@ const getMovieById = async (id) => {
 
 const getTopRated = async(type, number = 10) => {
 
-  let results = await Movie.find({type, "imdb.rating": {$ne: null}}).select("title poster runtime year imdb.rating").sort({ 'imdb.rating': -1 }).limit(Number(number)).lean();
+  let results = await Movie.find({type, "imdb.rating": {$ne: null}}).select("title poster runtime year imdb.rating premium").sort({ 'imdb.rating': -1 }).limit(Number(number)).lean();
   results = results.map(result => ({
     _id: result._id,
     title: result.title,
     poster: result.poster,
     runtimeInMinutes: result.runtime,
     releaseYear: result.year,
-    imdbRating: result.imdb.rating
+    imdbRating: result.imdb.rating,
+    premium: result.premium
   }));
 
   return results;

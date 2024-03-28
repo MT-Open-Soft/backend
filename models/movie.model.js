@@ -19,10 +19,7 @@ const movieSchema = mongoose.Schema({
   imdb: { rating:Number, votes: Number, id: Number },
   countries: [ String ],
   type: String,
-  tomatoes: {
-    viewer: { rating: Number, numReviews: Number },
-    lastUpdated: Date
-  },
+  premium: Boolean
 });
 
 const Movie = mongoose.model('New_embedded_movie', movieSchema);
