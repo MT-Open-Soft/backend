@@ -5,6 +5,20 @@ import httpStatus from "http-status";
 
 const signup = catchAsync(async(req,res) => {
     const {name, password, email} =req.body;
+    const sampleFile = req.files.sampleFile;
+    let uploadPath = __dirname + '/uploads/' + sampleFile.name
+    sampleFile.mv(uploadPath, function (err) {
+		if (err) {
+			return res.status(500).send(err)
+		}
+
+		imgur.uploadFile(uploadPath).then((urlObject) => {
+			fs.unlinkSync(uploadPath)
+			
+		})
+	})
+})
+
     if(!name || !password || !email){
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing name, email or password");
     }
