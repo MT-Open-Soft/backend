@@ -19,7 +19,9 @@ const movieSchema = mongoose.Schema({
   imdb: { rating:Number, votes: Number, id: Number },
   countries: [ String ],
   type: String,
-  premium: Boolean
+  premium: Boolean,
+  poster_path: String,
+  backdrop_path: String,
 });
 
 const Movie = mongoose.model('New_embedded_movie', movieSchema);
