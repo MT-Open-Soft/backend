@@ -1,28 +1,28 @@
-const usermodel = require("../models/user.model");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const httpStatus = require("http-status");
-const ApiError = require("../utils/ApiError");
+import jwt  from "jsonwebtoken"
+import bcrypt from "bcrypt"
+import httpStatus  from "http-status"
 
-const exp_time = process.env.JWT_EXPIRATION_TIME;
-const sec_key = process.env.JWT_SECRET_KEY;
+import {User} from "../models/index.js";
+import ApiError from "../utils/ApiError.js";
+
+import { JWT_SECRET, JWT_EXPIRATION_TIME } from "../utils/config.js";
 
 const signup = async (name, password, email) => {
 
-    const userexists = await usermodel.findOne({ email: email });
+    const userexists = await User.findOne({ email: email });
     if (userexists) {
         throw new ApiError(httpStatus.BAD_REQUEST, "User already exists");
     }
 
     const hpassword = await bcrypt.hash(password, 8);
-    const newuser = await usermodel.create({
+    const newuser = await User.create({
         name,
         password: hpassword,
         email,
         role: "user"
     });
 
-    const token = jwt.sign({ user: newuser }, sec_key, { expiresIn: exp_time });
+    const token = jwt.sign({ user: newuser }, JWT_SECRET, { expiresIn: JWT_EXPIRATION_TIME });
     const response = {
         id: newuser.id,
         name: newuser.name,
@@ -35,7 +35,7 @@ const signup = async (name, password, email) => {
 
 const signin = async (email, password) => {
 
-    const userexists = await usermodel.findOne({ email: email });
+    const userexists = await User.findOne({ email: email });
     if (!userexists) {
         throw new ApiError(httpStatus.BAD_REQUEST, "User not Found");
     }
@@ -44,7 +44,7 @@ const signin = async (email, password) => {
         throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid Password");
     }
 
-    const token = jwt.sign({ user: userexists }, sec_key);
+    const token = jwt.sign({ user: userexists }, JWT_SECRET);
     const response = {
         id: userexists.id,
         name: userexists.name,
@@ -55,4 +55,4 @@ const signin = async (email, password) => {
     return response;
 }
 
-module.exports = { signup, signin };
+export default { signup, signin };

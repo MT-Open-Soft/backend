@@ -1,5 +1,7 @@
-const movieModel = require("./movie.model")
+import Movie from "./movie.model.js";
+import User from "./user.model.js";
 
-module.exports = {
-    movieModel
+export {
+    Movie,
+    User
 }

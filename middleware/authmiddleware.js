@@ -1,10 +1,12 @@
-const httpStatus = require('http-status');
-const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET_KEY;
-const ApiError = require("../utils/ApiError");
-const catchAsync = require('../utils/catchAsync');
+import httpStatus from 'http-status';
+import jwt from 'jsonwebtoken';
 
-const authenticate = catchAsync(async (req, res, next) => {
+import ApiError from "../utils/ApiError.js";
+import catchAsync from '../utils/catchAsync.js';
+
+import { JWT_SECRET } from '../utils/config.js';
+
+export const authenticate = catchAsync(async (req, res, next) => {
   const token = req.header('Authorization');
 
   if (!token) {
@@ -21,12 +23,10 @@ const authenticate = catchAsync(async (req, res, next) => {
   }
 });
 
-const adminauthenticate = catchAsync(async (req, res, next) => {
+export const adminauthenticate = catchAsync(async (req, res, next) => {
 
   if (req.user.role !== "admin") {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Access denied. Admin only.');
   }
   next();
 });
-
-module.exports = { authenticate, adminauthenticate };

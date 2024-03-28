@@ -1,5 +1,5 @@
-const { searchService } = require("../services");
-const catchAsync = require("../utils/catchAsync");
+import { searchService } from "../services/index.js"
+import catchAsync from "../utils/catchAsync.js"
 
 const suggest = catchAsync(async(req,res) => {
     const {query} = req.query;
@@ -8,6 +8,6 @@ const suggest = catchAsync(async(req,res) => {
     res.send(response);
 })
 
-module.exports = {
+export default {
     suggest,
 };

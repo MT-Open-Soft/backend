@@ -1,7 +1,7 @@
-const catchAsync = require("../utils/catchAsync");
-const {authService} =require("../services");
-const ApiError = require("../utils/ApiError");
-const httpStatus = require("http-status");
+import catchAsync from "../utils/catchAsync.js"
+import {authService} from"../services/index.js";
+import ApiError from "../utils/ApiError.js";
+import httpStatus from "http-status";
 
 const signup = catchAsync(async(req,res) => {
     const {name, password, email} =req.body;
@@ -21,4 +21,4 @@ const signin = catchAsync(async(req,res) => {
     res.status(httpStatus.OK).json(response);
 });
     
-module.exports={signup,signin};
+export default {signup,signin};

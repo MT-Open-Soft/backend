@@ -1,8 +1,7 @@
-const usermodel = require("../models/user.model");
-const httpStatus = require("http-status");
-const catchAsync = require("../utils/catchAsync");
-const {userService}=require("../services");
-const ApiError = require("../utils/ApiError");
+import ApiError from "../utils/ApiError.js";
+import httpStatus from "http-status";
+import catchAsync from "../utils/catchAsync.js";
+import {userService} from "../services/index.js";
 
 const getUserData = catchAsync(async(req,res) => {
     const userId = req.user._id;
@@ -24,4 +23,4 @@ const updatePassword = catchAsync(async(req,res) => {
     res.status(httpStatus.OK).json(response);
 });
 
-module.exports = {  getUserData, deleteProfile, updatePassword };
+export default {  getUserData, deleteProfile, updatePassword };

@@ -1,12 +1,11 @@
-const moviemodel = require("../models/movie.model");
-const usermodel = require("../models/user.model");
-const httpStatus = require("http-status");
-const ApiError = require("../utils/ApiError");
-const { ObjectId } = require("mongoose").Types;
+import {Movie, User} from "../models/index.js"
+import httpStatus from "http-status";
+import ApiError from "../utils/ApiError.js"
+import { Types } from "mongoose"
 
 const getUsers = async () => {
 
-    const users = await usermodel.find({role: "user"});
+    const users = await User.find({role: "user"});
     const response = users.map(user => ({
         _id: user._id,
         name: user.name,
@@ -19,7 +18,7 @@ const getUsers = async () => {
 }
 const createMovie = async (data) => {
     const { title, type, imdb, genres, runtime, cast, directors, plot, fullplot, languages, released, year } = data;
-    const newMovie = new moviemodel({
+    const newMovie = new Movie({
         title,
         type,
         imdb,
@@ -39,7 +38,7 @@ const createMovie = async (data) => {
 }
 
 const deleteMovie = async (id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
     console.log(id);
@@ -50,7 +49,7 @@ const deleteMovie = async (id) => {
 }
 
 const updateMovie = async (movieToUpdate, id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
     const movie = await moviemodel.findById(id);
@@ -63,4 +62,4 @@ const updateMovie = async (movieToUpdate, id) => {
 
 }
 
-module.exports = { createMovie, deleteMovie, updateMovie, getUsers }
+export default { createMovie, deleteMovie, updateMovie, getUsers }

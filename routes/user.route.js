@@ -1,9 +1,10 @@
-const express = require("express");
+import express from "express";
+
+import {userController} from "../controllers/index.js";
 const userRouter = express.Router();
-const {userController}=require("../controllers");
 
 userRouter.get("/",userController.getUserData);
 userRouter.delete("/",userController.deleteProfile);
 userRouter.put("/password",userController.updatePassword);
 
-module.exports = userRouter;
+export default userRouter;

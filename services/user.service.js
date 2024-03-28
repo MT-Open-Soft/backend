@@ -1,14 +1,14 @@
-const usermodel = require("../models/user.model");
-const httpStatus = require("http-status");
-const ApiError = require("../utils/ApiError");
-const { ObjectId } = require("mongoose").Types;
-const bcrypt = require("bcrypt");
+import {User} from "../models/index.js";
+import httpStatus from "http-status";
+import ApiError from "../utils/ApiError.js";
+import { Types } from "mongoose"
+import bcrypt from "bcrypt";
 
 const getUser = async (id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid User ID");
     }
-    const user = await usermodel.findById(id);
+    const user = await User.findById(id);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
@@ -22,11 +22,11 @@ const getUser = async (id) => {
 }
 
 const deleteAccount = async (id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid User ID");
     }
 
-    const user = await usermodel.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
@@ -34,10 +34,10 @@ const deleteAccount = async (id) => {
 }
 
 const updatePassword = async (oldPassword, newPassword, id) => {
-    if (!ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid User ID");
     }
-    const user = await usermodel.findById(id);
+    const user = await User.findById(id);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
@@ -51,7 +51,7 @@ const updatePassword = async (oldPassword, newPassword, id) => {
         password: hpassword
 
     };
-    await usermodel.findByIdAndUpdate(id, userDataToUpdate, { new: true });
+    await User.findByIdAndUpdate(id, userDataToUpdate, { new: true });
     const response = {
         message: "Password updated successfully",
     };
@@ -60,4 +60,4 @@ const updatePassword = async (oldPassword, newPassword, id) => {
 }
 
 
-module.exports = { getUser, deleteAccount, updatePassword };
+export default { getUser, deleteAccount, updatePassword };

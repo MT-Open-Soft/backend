@@ -1,6 +1,6 @@
-const catchAsync = require("../utils/catchAsync");
-const {adminService} = require("../services");
-const httpStatus = require("http-status");
+import catchAsync from "../utils/catchAsync.js";
+import {adminService} from "../services/index.js";
+import httpStatus from "http-status";
 
 const getUsers = catchAsync(async(req,res) => {
     const response = await adminService.getUsers(req,res);
@@ -13,7 +13,6 @@ const createMovie = catchAsync(async (req, res) => {
     res.send(response);
 });
 const deleteMovie = catchAsync(async (req, res) => {
-    const {id}=req.params;
     const response = await adminService.deleteMovie(id);
     res.send(response);
 });
@@ -25,4 +24,4 @@ const updateMovie = catchAsync(async (req, res) => {
     res.send(response);
 });
 
-module.exports = { createMovie, deleteMovie, updateMovie, getUsers };
+export default { createMovie, deleteMovie, updateMovie, getUsers };

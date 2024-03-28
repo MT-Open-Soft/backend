@@ -1,8 +1,9 @@
-const adminController =require("./admin.controller");
-const authController= require("./auth.controller");
-const searchController = require("./search.controller");
-const userController= require("./user.controller")
+import adminController from "./admin.controller.js"
+import authController from "./auth.controller.js"
+import searchController  from "./search.controller.js"
+import userController from "./user.controller.js"
+import moviesController from "./movies.controller.js"
 
-module.exports = {
-    adminController,authController,searchController,userController
+export {
+    adminController,authController,searchController,userController, moviesController
 }

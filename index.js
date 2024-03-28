@@ -1,11 +1,9 @@
-const mongoose = require('mongoose');
-process.loadEnvFile();
-
-const app = require('./app');
-const PORT = process.env.PORT || 8080;
+import mongoose from 'mongoose';
+import { MONGO_URI, PORT } from './utils/config.js';
+import app from './app.js';
 
 let server;
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(MONGO_URI)
         .then(()=>{
           console.log("Connected to MongoDB database")
           server = app.listen(PORT, ()=>{
@@ -39,4 +37,4 @@ process.on('SIGTERM', () => {
   }
 });
 
-module.exports = app;
+export default app;

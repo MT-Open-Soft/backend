@@ -1,8 +1,13 @@
-const searchService = require("./search.service")
-const adminService=require("./admin.service");
-const authService=require("./auth.service");
-const userService=require("./user.service");
+import searchService from "./search.service.js"
+import adminService from "./admin.service.js"
+import authService from "./auth.service.js"
+import userService from "./user.service.js"
+import moviesService from "./movies.service.js"
 
-module.exports = {
-    searchService,adminService,authService,userService
+export {
+    searchService,
+    adminService,
+    authService,
+    userService,
+    moviesService
 }
