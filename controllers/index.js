@@ -5,5 +5,9 @@ import userController from "./user.controller.js"
 import moviesController from "./movies.controller.js"
 
 export {
-    adminController,authController,searchController,userController, moviesController
+    adminController,
+    authController,
+    searchController,
+    userController,
+    moviesController
 }

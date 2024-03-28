@@ -1,6 +1,5 @@
 import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError.js';
-// const logger = require('../utils/winston');
 
 export const errorConverter = (err, req, res, next) => {
   let error = err;

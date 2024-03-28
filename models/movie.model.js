@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const movieSchema = mongoose.Schema({
   plot: String,
@@ -22,7 +22,7 @@ const movieSchema = mongoose.Schema({
   tomatoes: {
     viewer: { rating: Number, numReviews: Number },
     lastUpdated: Date
-  }
+  },
 });
 
 const Movie = mongoose.model('Movie', movieSchema);

@@ -1,14 +1,18 @@
-import express from "express"
-import routes from "./routes/index.js";
-
-import { errorHandler, errorConverter } from './middleware/error.js'
+import express from 'express';
+import cors from 'cors';
+import routes from './routes/index.js';
+import { errorHandler, errorConverter } from './middleware/error.js';
 
 const app = express();
-app.use(express.json());
+let corsOptions = {
+  origin: "http://localhost:3000"
+}
+app.use(cors(corsOptions));
 app.get("/",(req,res)=>{
   res.status(200).json({CTS: "Up and Running"});
 })
 
+app.use(express.json());
 app.use('/api/v1', routes);
 app.use(errorConverter);
 app.use(errorHandler);
