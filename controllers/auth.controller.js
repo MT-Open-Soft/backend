@@ -5,7 +5,7 @@ import httpStatus from "http-status";
 
 const signup = catchAsync(async(req,res) => {
     const {name, password, email} =req.body;
-    const sampleFile = req.files.sampleFile;
+   /* const sampleFile = req.files.sampleFile;
     let uploadPath = __dirname + '/uploads/' + sampleFile.name
     sampleFile.mv(uploadPath, function (err) {
 		if (err) {
@@ -17,7 +17,7 @@ const signup = catchAsync(async(req,res) => {
 			
 		})
 	})
-})
+})*/
 
     if(!name || !password || !email){
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing name, email or password");
