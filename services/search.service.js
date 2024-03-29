@@ -1,4 +1,5 @@
 import {Movie} from "../models/index.js";
+import getAggregationPipeline from "../utils/hybrid-search-pipeline.js"
 
 const getSuggestions = async(query) => {
     const searchStage = {
@@ -82,108 +83,27 @@ const getSuggestions = async(query) => {
 }
 
 const getSearchResults = async(query) => {
-  const searchStage = {
-    index: "sample_mflix_search_index",
-    compound: {
-      should: [
-        {
-          text: {
-            query,
-            path: "title",
-            fuzzy : {
-              maxEdits : 1,
-              maxExpansions : 50
-            },
-            score: {
-              boost: {
-                value: 9
-              }
-            }
-          }
-        },
-        {
-          autocomplete: {
-            query,
-            path: "title",
-          }
-        },
-        {
-          text:{
-            query,
-            path: "genres",
-            score: {
-              boost: {
-                value: 4
-              }
-            }
-          }
-        },
-        {
-          text:{
-            query,
-            path: "cast",
-            fuzzy : {
-              maxEdits : 1,
-              maxExpansions : 50
-            },
-            score: {
-              boost: {
-                value: 7
-              }
-            }
-          }
-        },
-        {
-          text:{
-            query,
-            path: "directors",
-            fuzzy : {
-              maxEdits : 1,
-              maxExpansions : 50
-            },
-            score: {
-              boost: {
-                value: 2
-              }
-            }
-          }
-        }
-      ]
-    }
-  }
-
+  
+  const pipeline = await getAggregationPipeline(query);
   const searchResults = await Movie
-    .aggregate()
-    .search(searchStage)
-    .limit(50)
-    .project(
-      {
-        title :1,
-        "imdb.rating" :1,
-        _id:1, 
-        year:1,
-        runtime:1,
-        type:1, 
-        genres:1,
-        premium:1,
-        poster_path: 1,
-        backdrop_path: 1
-      });
-
+    .aggregate(pipeline);
+ 
   const response = searchResults.map(result => {
-    const { _id, title, poster,year, runtime: runtimeInMinutes, imdb: {rating}, type, genres, premium,poster_path, backdrop_path } = result;
+    let {title, poster, _id, year, runtime: runtimeInMinutes, type, highlights, rating, cast, directors, premium } = result;
+    highlights = new Set(highlights);
+
     return {
       _id,
       title,
       poster,
       rating,
-      year, 
+      year,
       runtimeInMinutes,
       type,
-      genres,
-      premium,
-      poster: poster_path,
-      thumbnail: backdrop_path
+      highlights: [...highlights],
+      cast,
+      directors,
+      premium
     }
   })
   return response;
