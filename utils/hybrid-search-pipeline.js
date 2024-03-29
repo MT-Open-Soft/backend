@@ -96,9 +96,10 @@ export default async function (query) {
         "year": 1,
         "runtime": 1,
         "type": 1,
-        "rating": 1,
+        "rating": "$imdb.rating",
         "cast": 1,
         "directors": 1,
+        "premium": 1,
         "highlight": {$meta: "searchHighlights"}
       }
     },
@@ -113,6 +114,7 @@ export default async function (query) {
         "rating": 1,
         "cast": 1,
         "directors": 1,
+        "premium": 1,
         "highlights": "$highlight.path"
       }
     }
@@ -142,7 +144,8 @@ export default async function (query) {
         "type": 1,
         "cast": 1,
         "directors": 1,
-        "rating": 1,
+        "rating": "$imdb.rating",
+        "premium": 1,
         "highlights": ["plot"]
       }
     }
@@ -192,6 +195,7 @@ export default async function (query) {
         "type": "$docs.type",
         "cast": "$docs.cast",
         "directors": "$docs.directors",
+        "premium": "$docs.premium",
         "rating": "$docs.imdb.rating",
       }
     }, {
@@ -241,6 +245,7 @@ export default async function (query) {
               "rating": "$docs.imdb.rating",
               "cast": "$docs.cast",
               "directors": "$docs.directors",
+              "premium": "$docs.premium",
               "highlight": "$docs.highlight.path"
             }
           }
@@ -259,6 +264,7 @@ export default async function (query) {
         "type": {"$first": "$type"},
         "rating": {"$first": "$rating"},
         "cast": {"$first": "$cast"},
+        "premium": {"$first": "$premium"},
         "directors": {"$first": "$directors"},
         "highlights": {"$max": "$highlight"}
       }
@@ -272,6 +278,7 @@ export default async function (query) {
         "runtime": 1,
         "type": 1,
         "rating": 1,
+        "premium": 1,
         cast:1,
         directors:1,
         "vs_score": {"$ifNull": ["$vs_score", 0]},
@@ -293,6 +300,7 @@ export default async function (query) {
         "rating": 1,
         cast:1,
         directors:1,
+        premium:1,
         "highlights": 1
       }
     },

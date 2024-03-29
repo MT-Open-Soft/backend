@@ -74,7 +74,7 @@ const getSearchResults = async(query) => {
     .aggregate(pipeline);
  
   const response = searchResults.map(result => {
-    let {title, poster, _id, year, runtime: runtimeInMinutes, type, highlights, rating, cast, directors } = result;
+    let {title, poster, _id, year, runtime: runtimeInMinutes, type, highlights, rating, cast, directors, premium } = result;
     highlights = new Set(highlights);
 
     return {
@@ -88,6 +88,7 @@ const getSearchResults = async(query) => {
       highlights: [...highlights],
       cast,
       directors,
+      premium
     }
   })
   return response;
