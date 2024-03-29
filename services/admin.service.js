@@ -42,24 +42,24 @@ const deleteMovie = async (id) => {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
     console.log(id);
-    await moviemodel.deleteOne({ id: id });
+    await Movie.deleteOne({ id: id });
     const response = { message: "Movie deleted successfully" };
     return response;
 
 }
 
-const updateMovie = async (movieToUpdate, id) => {
+const updateMovieStatus = async (id) => {
     if (!Types.ObjectId.isValid(id)) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
-    const movie = await moviemodel.findById(id);
+    const movie = await Movie.findById(id);
     if (!movie) {
         throw new ApiError(httpStatus.NOT_FOUND, "Movie not found");
     }
-    const updatedmovie = await moviemodel.findByIdAndUpdate(id, movieToUpdate, { new: true });
-    const response = { data: updatedmovie };
+    const updatedmovie = await Movie.findByIdAndUpdate(id, { premium: !movie.premium }, { new: true});
+    const response = { message: `Movie status updated to ${updatedmovie.premium}`};
     return response;
 
 }
 
-export default { createMovie, deleteMovie, updateMovie, getUsers }
+export default { createMovie, deleteMovie, updateMovieStatus, getUsers }
