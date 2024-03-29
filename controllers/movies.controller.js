@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
 import {moviesService} from '../services/index.js';
 import catchAsync from '../utils/catchAsync.js';
+import ApiError from '../utils/ApiError.js';
 
 const getMovies = catchAsync(async (req, res) => {
   const { genres, languages, page, pageSize } = req.query;
@@ -14,7 +15,15 @@ const getMovieById = catchAsync(async (req, res) => {
     res.status(httpStatus.OK).json(movie);
 });
 
+const getTopRatedMovies = catchAsync(async (req, res) => {
+    const {type, number} = req.query;
+    if(!type) throw new ApiError(httpStatus.BAD_REQUEST, "Missing type: movie or series");
+    const results = await moviesService.getTopRated(type, number);
+    res.status(httpStatus.OK).json(results);
+})
+
 export default {
   getMovies,
   getMovieById,
+  getTopRatedMovies
 };
