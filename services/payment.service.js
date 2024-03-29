@@ -2,17 +2,18 @@ import { User } from "../models/index.js";
 import Razorpay from 'razorpay'; 
 import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
-import { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } from "./config.js";
+import { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } from "../utils/config.js";
+import crypto from 'crypto'
 
 
-process.loadEnvFile();
+
 const razorpayInstance = new Razorpay({
     key_id: RAZORPAY_KEY_ID,
     key_secret:RAZORPAY_KEY_SECRET
     
 });
 
-const createorder = async (amount,username,item_name,item_description,emailid)=>{
+const createorder = async (amount,item_name,item_description,username,emailid)=>{
     try {
         console.log(amount);
         const options = {
@@ -31,10 +32,10 @@ const createorder = async (amount,username,item_name,item_description,emailid)=>
                 amount:amount,
                 key_id: RAZORPAY_KEY_ID,
                 product_name:item_name,
-                description:item_description,
+                description:emailid,
                 contact:"contact",
                 name: username,
-                email: emailid
+                email: item_description
             }
         )           
 
@@ -45,16 +46,13 @@ const createorder = async (amount,username,item_name,item_description,emailid)=>
 
 const subscription = async(query)=> {  
  
-    const user = await User.updateOne({email: query?.payload?.payment?.entity?.email},
-        {
-            
-            $set: {
-                //subscrription name set based on amount
-                subscription: (query?.payload?.payment?.entity?.description)
+    const user = await User.updateOne({email: query?.email},
+        {            
+            $set: {                
+                subscription: (query?.description)
             },
             $currentDate: { lastModified: true }
-        });  
-            
+        });          
         
         return("succesfully modified");          
 
@@ -64,15 +62,14 @@ const subscription = async(query)=> {
  
 const verifyorder = async (req) => {
     const secret= '12345678'
-    const crypto = require('crypto')
+    
     const shasum = crypto.createHmac('sha256', secret)
     shasum.update(JSON.stringify(req.body))
     const digest = shasum.digest('hex')
     console.log(digest, req.headers['x-razorpay-signature'])
     if(digest === req.headers['x-razorpay-signature']){
-        console.log('request is legit')
-        console.log (req.body.payload.payment.entity)
-        const response = subscription(req.body)
+        console.log('request is legit')             
+        const response = subscription(req.body.payload.payment.entity)
         return (response)
 
     }

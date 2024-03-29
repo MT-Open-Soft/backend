@@ -919,7 +919,7 @@ raw-body@2.5.2:
 
 razorpay@^2.9.2:
   version "2.9.2"
-  resolved "https://registry.npmjs.org/razorpay/-/razorpay-2.9.2.tgz"
+  resolved "https://registry.yarnpkg.com/razorpay/-/razorpay-2.9.2.tgz#95c62631abf3c8aa346c0582fb1a046f338d7927"
   integrity sha512-FMtt7FKnwt65WSocGlWGdwTCt7JyeiTK1ej8nHPl78R0BmJ13A57F1DtWVbpnghIfUa++4TD7+bRzq0YbOK8hw==
   dependencies:
     "@types/request-promise" "^4.1.48"
