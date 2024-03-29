@@ -2,6 +2,11 @@ import catchAsync from "../utils/catchAsync.js"
 import {authService} from"../services/index.js";
 import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
+import { IMGUR_CLIENT_ID } from "../utils/config.js";
+import axios from "axios";
+import FormData from "form-data";
+const data = new FormData();
+
 
 const signup = catchAsync(async(req,res) => {
     const {name, password, email} =req.body;
@@ -18,6 +23,17 @@ const signup = catchAsync(async(req,res) => {
 		})
 	})
 })*/
+   const image = req.file.buffer;
+   if(!image) throw new ApiError('Image not provided');
+        data.append('image',image);
+        const headers = {
+            headers: { 
+                Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
+                ...data.getHeaders()
+            }
+        }
+        const uploadData = await axios.post('https://api.imgur.com/3/image',data,headers); 
+        console.log(uploadData);   
 
     if(!name || !password || !email){
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing name, email or password");

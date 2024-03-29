@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema({
     email: { type: String, unique: true },
     role: String,
     subscription: { type: String, default: "Free" },
+    image_link: String
   }
 );
 
