@@ -3,19 +3,21 @@ import httpStatus from "http-status";
 import ApiError from "../utils/ApiError.js"
 import { Types } from "mongoose"
 
-const getUsers = async () => {
-
-    const users = await User.find({role: "user"});
-    const response = users.map(user => ({
+const getUsers = async (subscription) => {
+    let users = await User.find({
+        role: "user",
+        ...(subscription && {subscription})
+    });
+    users = users.map(user => ({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         subscription: user.subscription
     }));
-    return response;
-
+    return users;
 }
+
 const createMovie = async (data) => {
     const { title, type, imdb, genres, runtime, cast, directors, plot, fullplot, languages, released, year } = data;
     const newMovie = new Movie({
