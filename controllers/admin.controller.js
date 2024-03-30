@@ -17,11 +17,10 @@ const deleteMovie = catchAsync(async (req, res) => {
     res.send(response);
 });
 
-const updateMovie = catchAsync(async (req, res) => {
-    const movieToUpdate =req.body;
+const updateMovieStatus = catchAsync(async (req, res) => {    
     const {id} =req.params;
-    const response = await adminService.updateMovie(movieToUpdate,id);
-    res.send(response);
+    const response = await adminService.updateMovieStatus(id);
+    res.status(httpStatus.OK).json(response);
 });
 
-export default { createMovie, deleteMovie, updateMovie, getUsers };
+export default { createMovie, deleteMovie, updateMovieStatus, getUsers };
