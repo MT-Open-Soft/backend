@@ -5,6 +5,8 @@ import userService from "./user.service.js"
 import moviesService from "./movies.service.js"
 import paymentService from "./payment.service.js"
 
+
+
 export {
     searchService,
     adminService,

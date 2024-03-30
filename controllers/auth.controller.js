@@ -4,7 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
 
 const signup = catchAsync(async(req,res) => {
-    const {name, password, email} =req.body;
+    const {name, password, email} =req.body;   
     if(!name || !password || !email){
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing name, email or password");
     }

@@ -5,6 +5,8 @@ import userRouter from "./user.route.js"
 import moviesRouter from "./movies.route.js"
 import subscribeRouter from "./subscribe.route.js";
 import {authenticate, adminauthenticate} from "../middleware/authmiddleware.js";
+
+
 import express from "express";
 
 const router = express.Router();
@@ -16,5 +18,4 @@ router.use("/admin", authenticate,adminauthenticate,adminRouter);
 router.use("/subscribe", authenticate,subscribeRouter);
 router.use("/payments", subscribeRouter);
 router.use("/movies", moviesRouter);
-
 export default router;

@@ -22,5 +22,12 @@ const updatePassword = catchAsync(async(req,res) => {
     const response = await userService.updatePassword(oldPassword,newPassword,userId);
     res.status(httpStatus.OK).json(response);
 });
+const uploadImage = catchAsync(async(req,res) => {
+    const image = req.file?.buffer;
+    if(!image) throw new ApiError(httpStatus.BAD_REQUEST, "Image not provided");
 
-export default {  getUserData, deleteProfile, updatePassword };
+    const {email} = req.user;
+    const response = await userService.uploadImage(image,email);   
+    res.status(200).json(response);
+});
+export default {  getUserData, deleteProfile, updatePassword ,uploadImage};
