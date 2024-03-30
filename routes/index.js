@@ -3,6 +3,7 @@ import authRouter from "./auth.route.js"
 import adminRouter from "./admin.route.js"
 import userRouter from "./user.route.js"
 import moviesRouter from "./movies.route.js"
+import subscribeRouter from "./subscribe.route.js";
 import {authenticate, adminauthenticate} from "../middleware/authmiddleware.js";
 import express from "express";
 
@@ -12,6 +13,8 @@ router.use("/auth",authRouter);
 router.use("/search", searchRouter);
 router.use("/user", authenticate,userRouter);
 router.use("/admin", authenticate,adminauthenticate,adminRouter);
+router.use("/subscribe", authenticate,subscribeRouter);
+router.use("/payments", subscribeRouter);
 router.use("/movies", moviesRouter);
 
 export default router;
