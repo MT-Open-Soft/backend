@@ -44,7 +44,8 @@ const deleteMovie = async (id) => {
         throw new ApiError(httpStatus.BAD_REQUEST, "Invalid movie ID");
     }
     console.log(id);
-    await Movie.deleteOne({ id: id });
+    await Movie.deleteOne({ _id: id });    
+
     const response = { message: "Movie deleted successfully" };
     return response;
 

@@ -14,8 +14,9 @@ const createMovie = catchAsync(async (req, res) => {
     res.send(response);
 });
 const deleteMovie = catchAsync(async (req, res) => {
+    const {id} = req.params;
     const response = await adminService.deleteMovie(id);
-    res.send(response);
+    res.status(httpStatus.OK).json(response);
 });
 
 const updateMovieStatus = catchAsync(async (req, res) => {    
