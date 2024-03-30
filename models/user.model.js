@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema({
     email: { type: String, unique: true },
     role: String,
     subscription: { type: String, default: "FREE" },
-    image_link: {type: String, default: "https://www.gravatar.com/avatar/"}
+    avatar: {type: String, default: "https://www.gravatar.com/avatar/"}
   }
 );
 

@@ -25,6 +25,7 @@ const signup = async (name, password, email) => {
     const token = jwt.sign({ user: newuser }, JWT_SECRET, { expiresIn: JWT_EXPIRATION_TIME });
     const response = {
         id: newuser.id,
+        avatar: newuser.avatar,
         name: newuser.name,
         role: newuser.role,
         subscription: newuser.subscription,
@@ -46,6 +47,7 @@ const signin = async (email, password) => {
 
     const token = jwt.sign({ user: userexists }, JWT_SECRET);
     const response = {
+        avatar: userexists.avatar,
         id: userexists.id,
         name: userexists.name,
         role: userexists.role,
