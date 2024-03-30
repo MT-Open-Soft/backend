@@ -42,10 +42,6 @@ export default async function (query) {
               text:{
                 query,
                 path: "cast",
-                fuzzy : {
-                  maxEdits : 1,
-                  maxExpansions : 50
-                },
                 score: {
                   boost: {
                     value: 7
@@ -57,10 +53,6 @@ export default async function (query) {
               text:{
                 query,
                 path: "directors",
-                fuzzy : {
-                  maxEdits : 1,
-                  maxExpansions : 50
-                },
                 score: {
                   boost: {
                     value: 2
@@ -70,15 +62,15 @@ export default async function (query) {
             }
           ]
         },
-        "highlight": {
-          "path": ["title", "cast", "genres", "directors"], 
-          "maxCharsToExamine": 500, 
-          "maxNumPassages": 3
+        highlight: {
+          path: ["title", "cast", "genres", "directors"], 
+          maxCharsToExamine: 500, 
+          maxNumPassages: 3
         }
       }
 
-    let vector_penalty;
-    let full_text_penalty;
+  let vector_penalty;
+  let full_text_penalty;
   
   const words = query.split(" ");
   const wordCount = words.length;
