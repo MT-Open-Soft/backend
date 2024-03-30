@@ -3,7 +3,8 @@ import {adminService} from "../services/index.js";
 import httpStatus from "http-status";
 
 const getUsers = catchAsync(async(req,res) => {
-    const response = await adminService.getUsers(req,res);
+    const{subscription}=req.query; 
+    const response = await adminService.getUsers(subscription);
     res.status(httpStatus.OK).json(response);
 });
 

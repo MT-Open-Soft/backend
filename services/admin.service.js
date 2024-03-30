@@ -3,9 +3,11 @@ import httpStatus from "http-status";
 import ApiError from "../utils/ApiError.js"
 import { Types } from "mongoose"
 
-const getUsers = async () => {
+const getUsers = async (subscription) => {
 
-    const users = await User.find({role: "user"});
+    const users = await User.find({role: "user", 
+ ...(subscription && {subscription})
+});
     const response = users.map(user => ({
         _id: user._id,
         name: user.name,
@@ -13,7 +15,11 @@ const getUsers = async () => {
         role: user.role,
         subscription: user.subscription
     }));
-    return response;
+    //add count field to response
+    response.count = response.length;
+
+    console.log(response)
+    return response.count;
 
 }
 const createMovie = async (data) => {
