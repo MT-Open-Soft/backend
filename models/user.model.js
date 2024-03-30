@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema({
     password: String,
     email: { type: String, unique: true },
     role: String,
-    subscription: { type: String, default: "Free" },
+    subscription: { type: String, default: "FREE" },
   }
 );
 

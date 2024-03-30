@@ -17,7 +17,7 @@ const getMovieById = catchAsync(async (req, res) => {
 
     const movie = await moviesService.getMovieById(id);
     let isPurchased = null;
-    if(movie.premium ==true && subscription === "Free") isPurchased = false;
+    if(movie.premium ==true && subscription === "FREE") isPurchased = false;
     else isPurchased = true;
 
     const response = {
