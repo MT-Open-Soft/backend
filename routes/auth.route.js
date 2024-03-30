@@ -1,6 +1,4 @@
 import express from "express"
-import multer from "multer"
-const upload = multer();
 
 import {authController} from "../controllers/index.js";
 
