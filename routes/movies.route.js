@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.get('/', moviesController.getMovies);
 router.get('/toprated', moviesController.getTopRatedMovies);
-router.get('/:id', authenticate,moviesController.getMovieById);
+router.get('/:id',moviesController.getMovieById);
 
 export default router;
