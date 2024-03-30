@@ -13,7 +13,8 @@ router.use("/auth",authRouter);
 router.use("/search", searchRouter);
 router.use("/user", authenticate,userRouter);
 router.use("/admin", authenticate,adminauthenticate,adminRouter);
-router.use("/subscribe", subscribeRouter);
+router.use("/subscribe", authenticate,subscribeRouter);
+router.use("/payments", subscribeRouter);
 router.use("/movies", moviesRouter);
 
 export default router;

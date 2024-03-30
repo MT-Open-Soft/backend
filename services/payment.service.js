@@ -13,7 +13,7 @@ const razorpayInstance = new Razorpay({
     
 });
 
-const createorder = async (amount,item_name,item_description,username,emailid)=>{
+const createOrder = async (amount,item_name,item_description,username,emailid)=>{
     try {
         console.log(amount);
         const options = {
@@ -60,7 +60,7 @@ const subscription = async(query)=> {
 
 
  
-const verifyorder = async (req) => {
+const verifyOrder = async (req) => {
     const secret= '12345678'
     
     const shasum = crypto.createHmac('sha256', secret)
@@ -79,6 +79,6 @@ const verifyorder = async (req) => {
 }
 
 export default {
-    createorder,
-    verifyorder
+    createOrder,
+    verifyOrder
 }

@@ -2,16 +2,17 @@ import httpStatus from 'http-status';
 import { paymentService } from '../services/index.js';
 import catchAsync from '../utils/catchAsync.js';
 
-const createorder = catchAsync(async (req, res) => {
-    const {amount,username,emailid,item_name,item_description}= req.body;   
-    const response = await paymentService.createorder(amount,username,emailid,item_name,item_description);    
+const createOrder = catchAsync(async (req, res) => {
+    const {name , email} = req.user;
+    const {amount,item_name,item_description}= req.body;   
+    const response = await paymentService.createOrder(amount,name,email,item_name,item_description);    
     res.status(httpStatus.OK).json(response);   
 
 }
 );
 
-const verifyorder = catchAsync(async (req, res) => {    
-    const response = await paymentService.verifyorder(req);
+const verifyOrder = catchAsync(async (req, res) => {    
+    const response = await paymentService.verifyOrder(req);
     res.status(httpStatus.OK).json(response);   
 
 }
@@ -19,6 +20,6 @@ const verifyorder = catchAsync(async (req, res) => {
 
 
 export default {    
-    createorder,
-    verifyorder
+    createOrder,
+    verifyOrder
 };
