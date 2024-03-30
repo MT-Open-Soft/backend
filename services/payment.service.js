@@ -5,8 +5,6 @@ import httpStatus from "http-status";
 import { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } from "../utils/config.js";
 import crypto from 'crypto'
 
-
-
 const razorpayInstance = new Razorpay({
     key_id: RAZORPAY_KEY_ID,
     key_secret:RAZORPAY_KEY_SECRET
@@ -44,21 +42,20 @@ const createOrder = async (amount,item_name,item_description,username,emailid)=>
     }
 }
 
-const subscription = async(query)=> {  
+const subscribeUser = async(query)=> {
  
-    const user = await User.updateOne({email: query?.email},
+    const user = await User.findOneAndUpdate({email: query?.email},
         {            
             $set: {                
                 subscription: (query?.description)
             },
             $currentDate: { lastModified: true }
-        });          
+        }, {new: true});
         
-        return("succesfully modified");          
-
-        }
-
-
+    if(user == null) throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    if(user.subscription == query?.description)
+        return {message: "User updated", _id: user._id, name: user.name, subscription: user.subscription }
+}
  
 const verifyOrder = async (req) => {
     const secret= '12345678'
@@ -68,12 +65,13 @@ const verifyOrder = async (req) => {
     const digest = shasum.digest('hex')
     console.log(digest, req.headers['x-razorpay-signature'])
     if(digest === req.headers['x-razorpay-signature']){
-        console.log('request is legit')             
-        const response = subscription(req.body.payload.payment.entity)
-        return (response)
-
-    }
-    else{
+        // console.log('request is legit')  
+        if (req.body.event === 'payment.captured') {    
+        const response = await subscribeUser(req.body.payload.payment.entity);
+        console.log(response)
+        return response
+        } else throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Payment failed");
+    } else{
         throw new ApiError(httpStatus.BAD_REQUEST, "Bad Request")
     }
 }
