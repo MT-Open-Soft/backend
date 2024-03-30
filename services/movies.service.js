@@ -21,7 +21,8 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
   const movies = await Movie.find(query).select({
     _id: 1,
     title: 1,
-    poster: 1,
+    poster_path: 1,
+    backdrop_path: 1,
     type: 1,
     cast: 1,
     'imdb.rating': 1,
@@ -30,6 +31,7 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
     runtime: 1,
     year: 1,
     directors: 1,
+    premium: 1
   })
     .skip((page - 1) * pageSize)
     .limit(pageSize).lean();
@@ -39,14 +41,16 @@ const findMovies = async (genres, languages,page = 1, pageSize = 10) => {
   const renamedMovies = movies.map(movie => ({
     _id: movie._id,
     title: movie.title,
-    poster: movie.poster,
+    poster: movie.poster_path,
+    thumbnail: movie.backdrop_path,
     type: movie.type,
     cast: movie.cast,
     languages: movie.languages,
     runtimeInMinutes: movie.runtime,
     releaseYear: movie.year,
     directors: movie.directors,
-    imdbRating: movie.imdb.rating
+    imdbRating: movie.imdb.rating,
+    premium: movie.premium
   }));
 
   return {
@@ -65,7 +69,8 @@ const getMovieById = async (id) => {
   const movie = await Movie.findById(id).select({
     _id: 1,
     title: 1,
-    poster: 1,
+    poster_path: 1,
+    backdrop_path: 1,
     type: 1,
     cast: 1,
     'imdb.rating': 1,
@@ -76,6 +81,7 @@ const getMovieById = async (id) => {
     year: 1,
     directors: 1,
     genres: 1,
+    premium: 1,
   }).lean();
   
   if (movie === null) {
@@ -85,7 +91,8 @@ const getMovieById = async (id) => {
   return {
     _id: movie._id,
     title: movie.title,
-    poster: movie.poster,
+    poster: movie.poster_path,
+    thumbnail: movie.backdrop_path,
     type: movie.type,
     cast: movie.cast,
     plot: movie.fullplot,
@@ -94,11 +101,30 @@ const getMovieById = async (id) => {
     releaseYear: movie.year,
     directors: movie.directors,
     imdbRating: movie.imdb.rating,
-    genres: movie.genres
+    genres: movie.genres,
+    premium: movie.premium
   };
 };
+
+const getTopRated = async(type, number = 10) => {
+
+  let results = await Movie.find({type, "imdb.rating": {$ne: null}}).select("title runtime year imdb.rating premium poster_path backdrop_path").sort({ 'imdb.rating': -1 }).limit(Number(number)).lean();
+  results = results.map(result => ({
+    _id: result._id,
+    title: result.title,
+    poster: result.poster_path,
+    thumbnail: result.backdrop_path,
+    runtimeInMinutes: result.runtime,
+    releaseYear: result.year,
+    imdbRating: result.imdb.rating,
+    premium: result.premium
+  }));
+
+  return results;
+}
 
 export default {
   findMovies,
   getMovieById,
+  getTopRated
 };

@@ -37,7 +37,7 @@ const signin = async (email, password) => {
 
     const userexists = await User.findOne({ email: email });
     if (!userexists) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "User not Found");
+        throw new ApiError(httpStatus.NOT_FOUND, "User not Found");
     }
     const chkpassword = await bcrypt.compare(password, userexists.password);
     if (!chkpassword) {

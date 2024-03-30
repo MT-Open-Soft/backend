@@ -1,7 +1,6 @@
 import express from "express";
-const router = express.Router();
-
 import {searchController} from "../controllers/index.js";
+const router = express.Router();
 
 router.get("/suggestions", searchController.suggest);
 router.get("/", searchController.search);

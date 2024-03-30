@@ -7,14 +7,13 @@ import catchAsync from '../utils/catchAsync.js';
 import { JWT_SECRET } from '../utils/config.js';
 
 export const authenticate = catchAsync(async (req, res, next) => {
-  const token = req.header('Authorization');
-
+  let token = req.headers['authorization'];
   if (!token) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Authorization header required.');
   }
-  const tokenn = token.substring("Bearer ".length);
+  token = token.substring("Bearer ".length);
   try {
-    const decoded = jwt.verify(tokenn, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded.user;
     next();
   } catch (err) {
