@@ -3,6 +3,9 @@ import httpStatus from "http-status";
 import ApiError from "../utils/ApiError.js";
 import { Types } from "mongoose"
 import bcrypt from "bcrypt";
+import axios from 'axios';
+import FormData from 'form-data';
+import { IMGUR_CLIENT_ID } from '../utils/config.js';
 
 const getUser = async (id) => {
     if (!Types.ObjectId.isValid(id)) {
@@ -59,5 +62,22 @@ const updatePassword = async (oldPassword, newPassword, id) => {
 
 }
 
+const uploadImage = async(image,email) => {    
+    const data = new FormData();
+    
+    data.append('image',image);
+    const headers = {
+        headers: { 
+            Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
+            ...data.getHeaders()
+        }
+    }
+    const uploadData = await axios.post('https://api.imgur.com/3/image',data,headers);     
+    const user = await User.findOneAndUpdate({email: email}, { $set: { image_link: uploadData.data.data.link }, $currentDate: { lastModified: true } }, {new: true});
+      
+    return user;
+}
 
-export default { getUser, deleteAccount, updatePassword };
+
+
+export default { getUser, deleteAccount, updatePassword ,uploadImage};

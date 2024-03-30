@@ -9,32 +9,7 @@ const data = new FormData();
 
 
 const signup = catchAsync(async(req,res) => {
-    const {name, password, email} =req.body;
-   /* const sampleFile = req.files.sampleFile;
-    let uploadPath = __dirname + '/uploads/' + sampleFile.name
-    sampleFile.mv(uploadPath, function (err) {
-		if (err) {
-			return res.status(500).send(err)
-		}
-
-		imgur.uploadFile(uploadPath).then((urlObject) => {
-			fs.unlinkSync(uploadPath)
-			
-		})
-	})
-})*/
-   const image = req.file.buffer;
-   if(!image) throw new ApiError('Image not provided');
-        data.append('image',image);
-        const headers = {
-            headers: { 
-                Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
-                ...data.getHeaders()
-            }
-        }
-        const uploadData = await axios.post('https://api.imgur.com/3/image',data,headers); 
-        console.log(uploadData);   
-
+    const {name, password, email} =req.body;   
     if(!name || !password || !email){
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing name, email or password");
     }
