@@ -2,11 +2,6 @@ import catchAsync from "../utils/catchAsync.js"
 import {authService} from"../services/index.js";
 import ApiError from "../utils/ApiError.js";
 import httpStatus from "http-status";
-import { IMGUR_CLIENT_ID } from "../utils/config.js";
-import axios from "axios";
-import FormData from "form-data";
-const data = new FormData();
-
 
 const signup = catchAsync(async(req,res) => {
     const {name, password, email} =req.body;   
