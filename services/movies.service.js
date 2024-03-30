@@ -101,7 +101,8 @@ const getMovieById = async (id) => {
     releaseYear: movie.year,
     directors: movie.directors,
     imdbRating: movie.imdb.rating,
-    genres: movie.genres
+    genres: movie.genres,
+    premium: movie.premium
   };
 };
 

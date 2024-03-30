@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import {moviesService} from '../services/index.js';
 import catchAsync from '../utils/catchAsync.js';
 import ApiError from '../utils/ApiError.js';
+import User from '../models/user.model.js';
 
 const getMovies = catchAsync(async (req, res) => {
   const { genres, languages, page, pageSize } = req.query;
@@ -11,8 +12,19 @@ const getMovies = catchAsync(async (req, res) => {
 
 const getMovieById = catchAsync(async (req, res) => {
     const { id } = req.params;
+    const { _id: userId } = req.user;
+    const {subscription} = await User.findById(userId).select("subscription");
+
     const movie = await moviesService.getMovieById(id);
-    res.status(httpStatus.OK).json(movie);
+    let isPurchased = null;
+    if(movie.premium ==true && subscription === "Free") isPurchased = false;
+    else isPurchased = true;
+
+    const response = {
+      ...movie,
+      isPurchased
+    }
+    res.status(httpStatus.OK).json(response);
 });
 
 const getTopRatedMovies = catchAsync(async (req, res) => {
