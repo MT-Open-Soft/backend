@@ -74,8 +74,13 @@ const uploadImage = async(image,email) => {
     }
     const uploadData = await axios.post('https://api.imgur.com/3/image',data,headers);     
     const user = await User.findOneAndUpdate({email: email}, { $set: { image_link: uploadData.data.data.link }, $currentDate: { lastModified: true } }, {new: true});
-      
-    return user;
+    if(!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    }
+    return {
+        message: "Image uploaded successfully",
+        image_link: user.image_link
+    };
 }
 
 
