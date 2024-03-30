@@ -57,7 +57,7 @@ const updateMovieStatus = async (id) => {
         throw new ApiError(httpStatus.NOT_FOUND, "Movie not found");
     }
     const updatedmovie = await Movie.findByIdAndUpdate(id, { premium: !movie.premium }, { new: true});
-    const response = { message: `Movie status updated to ${updatedmovie.premium}`};
+    const response = { state: updatedmovie.premium};
     return response;
 
 }
