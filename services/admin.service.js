@@ -4,24 +4,20 @@ import ApiError from "../utils/ApiError.js"
 import { Types } from "mongoose"
 
 const getUsers = async (subscription) => {
-
-    const users = await User.find({role: "user", 
- ...(subscription && {subscription})
-});
-    const response = users.map(user => ({
+    let users = await User.find({
+        role: "user",
+        ...(subscription && {subscription})
+    });
+    users = users.map(user => ({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         subscription: user.subscription
     }));
-    //add count field to response
-    response.count = response.length;
-
-    console.log(response)
-    return response.count;
-
+    return users;
 }
+
 const createMovie = async (data) => {
     const { title, type, imdb, genres, runtime, cast, directors, plot, fullplot, languages, released, year } = data;
     const newMovie = new Movie({
