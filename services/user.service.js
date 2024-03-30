@@ -43,7 +43,7 @@ const updatePassword = async (oldPassword, newPassword, id) => {
     }
     const chkpassword = await bcrypt.compare(oldPassword, user.password);
     if (!chkpassword) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Old Password Incorrect");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Incorrect old password");
     }
 
     const hpassword = await bcrypt.hash(newPassword, 8);
@@ -56,8 +56,6 @@ const updatePassword = async (oldPassword, newPassword, id) => {
         message: "Password updated successfully",
     };
     return response;
-
 }
-
 
 export default { getUser, deleteAccount, updatePassword };
