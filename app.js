@@ -5,7 +5,7 @@ import { errorHandler, errorConverter } from './middleware/error.js';
 
 const app = express();
 let corsOptions = {
-  origin: ["http://localhost:3000", "https://ui-client-neon.vercel.app/", "https://www.shik-shak-show.tech", "https://shik-shak-show.tech", "https://ui-client-git-master-shik-shak-show.vercel.app/"],
+  origin:"*"
 }
 app.use(cors(corsOptions));
 app.get("/",(req,res)=>{
