@@ -28,4 +28,4 @@ Postman Documentation [here](https://documenter.getpostman.com/view/20079745/2sA
 
 Base URL for local: http://127.0.0.1:8080
 
-Production URL: https://api.shik-shak-show.tech
+Production URL: https://api.shik-shak-show.tech [Not up currently]
