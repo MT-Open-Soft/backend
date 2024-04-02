@@ -5,7 +5,7 @@ import { errorHandler, errorConverter } from './middleware/error.js';
 
 const app = express();
 let corsOptions = {
-  origin:"*"
+  origin: ["http://localhost:3000", "https://shik-shak-show.tech", "https://www.shik-shak-show.tech"],
 }
 app.use(cors(corsOptions));
 app.get("/",(req,res)=>{
