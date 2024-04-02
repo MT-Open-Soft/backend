@@ -1,4 +1,4 @@
-# shik-shak-show API
+#  Open Soft 2024 Backend
 The core backend for the shik-shak-show website, submission for Open Soft 2024 from the Mother Teresa Hall of Residence.
 Written in Javascript with Express and Node, using MongoDB Atlas as the cloud database.
 
@@ -10,16 +10,17 @@ Clone the project
   git clone https://github.com/MT-Open-Soft-24/backend.git
   cd backend
 ```
-Install dependencies and start the server
+Install dependencies, load env variables and start the server
 ```
   yarn install
+  cp .env.template .env
+  Initialise the environment vars in .env file
   yarn start
 ```
-The server runs in production mode by default. To run in development mode:
+The server runs in production mode by default. To run in development mode with hot-reloading:
 ```
   yarn dev
 ```
-
 
 ## API Reference
 
